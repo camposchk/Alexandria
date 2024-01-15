@@ -1,0 +1,15 @@
+C:\Users\disrct\Desktop\Habbosch\bin\Debug\net7.0-windows\Habbosch.exe
+C:\Users\disrct\Desktop\Habbosch\bin\Debug\net7.0-windows\Habbosch.deps.json
+C:\Users\disrct\Desktop\Habbosch\bin\Debug\net7.0-windows\Habbosch.runtimeconfig.json
+C:\Users\disrct\Desktop\Habbosch\bin\Debug\net7.0-windows\Habbosch.dll
+C:\Users\disrct\Desktop\Habbosch\bin\Debug\net7.0-windows\Habbosch.pdb
+C:\Users\disrct\Desktop\Habbosch\obj\Debug\net7.0-windows\Habbosch.csproj.AssemblyReference.cache
+C:\Users\disrct\Desktop\Habbosch\obj\Debug\net7.0-windows\Habbosch.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\disrct\Desktop\Habbosch\obj\Debug\net7.0-windows\Habbosch.AssemblyInfoInputs.cache
+C:\Users\disrct\Desktop\Habbosch\obj\Debug\net7.0-windows\Habbosch.AssemblyInfo.cs
+C:\Users\disrct\Desktop\Habbosch\obj\Debug\net7.0-windows\Habbosch.csproj.CoreCompileInputs.cache
+C:\Users\disrct\Desktop\Habbosch\obj\Debug\net7.0-windows\Habbosch.dll
+C:\Users\disrct\Desktop\Habbosch\obj\Debug\net7.0-windows\refint\Habbosch.dll
+C:\Users\disrct\Desktop\Habbosch\obj\Debug\net7.0-windows\Habbosch.pdb
+C:\Users\disrct\Desktop\Habbosch\obj\Debug\net7.0-windows\Habbosch.genruntimeconfig.cache
+C:\Users\disrct\Desktop\Habbosch\obj\Debug\net7.0-windows\ref\Habbosch.dll
