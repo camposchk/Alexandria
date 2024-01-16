@@ -1,17 +1,34 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Runtime.Intrinsics.X86;
 using System.Windows.Forms;
+using Microsoft.VisualBasic.Devices;
 
 ApplicationConfiguration.Initialize();
 
 Graphics g = null;
+PointF cursor = PointF.Empty;
 
 Player player = new Player();
 
 PictureBox pb = new PictureBox()
 {
     Dock = DockStyle.Fill
+};
+
+Timer tm = new Timer
+{
+    Interval = 10
+};
+
+Room room = new Room(pb);
+
+tm.Tick += delegate
+{
+    room.DrawFloor(g);
+    player.Draw(g);
+    pb.Refresh();
 };
 
 Form form = new Form()
@@ -21,12 +38,22 @@ Form form = new Form()
     Controls = { pb }
 };
 
-pb.Paint += (o , e) =>
+form.Load += delegate
 {
-    player.Draw(e.Graphics);
+    Bitmap bitmap = new Bitmap(pb.Width, pb.Height);
+    g = Graphics.FromImage(bitmap);
+    tm.Start();
 };
 
-Room room = new Room(pb);
+// pb.Paint += (o, e) =>
+// {
+//     player.Draw(e.Graphics);
+// };
+
+pb.MouseMove += (o, e) =>
+{
+    cursor = e.Location;
+};
 
 Application.Run(form);
 
