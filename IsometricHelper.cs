@@ -1,4 +1,3 @@
-using System;
 using System.Drawing;
 using System.Linq;
 
@@ -40,20 +39,6 @@ public static class IsometricHelper
             .ToArray();
     }
 
-    // public static PointF Rotate(this PointF p, PointF reference, float angle)
-    // {
-    //     var x = p.X - reference.X;
-    //     var y = p.Y - reference.Y;
-
-    //     var cos = MathF.Cos(angle);
-    //     var sin = MathF.Sin(angle);
-
-    //     var nx = x * cos - y * sin + reference.X;
-    //     var ny = x * sin + y * cos + reference.Y;
-
-    //     return new PointF(nx, ny);
-    // }
-
     public static PointF[] Rectangle(this (float x, float y, float width, float height) tuple)
     {
         return new PointF[] {
@@ -73,11 +58,4 @@ public static class IsometricHelper
             new PointF(tuple.x, tuple.y + tuple.height),
         };
     }
-
-    // public static PointF[] Rotate(this PointF[] pts, PointF reference, float angle)
-    // {
-    //     return pts
-    //         .Select(p => p.Rotate(reference, angle))
-    //         .ToArray();
-    // }
 }

@@ -1,12 +1,17 @@
-using System;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Security.Cryptography;
+using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Windows.Forms;
+using Microsoft.VisualBasic;
 
 public class Room
 {
+    private int roomWidth { get; set; } = 500;
+    private int roomHeight { get; set; } = 500;
+    private int tileWidth { get; set; } = 50;
+    private int tileHeight { get; set; } = 50;
     private PictureBox pictureBox;
+  
     private PointF cursor = PointF.Empty;
     public Room(PictureBox pictureBox)
     {
@@ -32,88 +37,141 @@ public class Room
 
     private void Room_Paint(object sender, PaintEventArgs e)
     {
-        DrawFloor(e.Graphics);
         DrawWalls(e.Graphics);
+        DrawFloor(e.Graphics);
     }
 
     public void DrawFloor(Graphics g)
-    {
-        int outerRhombusWidth = 500;
-        int outerRhombusHeight = 500;
-        
+    {        
         var center = new PointF(
             pictureBox.ClientSize.Width / 2,
             pictureBox.ClientSize.Height / 2
         ).Normal();
 
-        int innerRhombusWidth = 40;
-        int innerRhombusHeight = 40;
+        DrawRhombus(g, Color.Transparent, center.X, center.Y, roomWidth, roomHeight);
 
-        DrawRhombus(g, Color.Black, center.X, center.Y, outerRhombusWidth, outerRhombusHeight);
-
-        int rows = outerRhombusHeight / innerRhombusHeight;
-        int cols = outerRhombusWidth / innerRhombusWidth;
+        int rows = roomHeight / tileHeight;
+        int cols = roomWidth / tileWidth;
 
         for (int i = 0; i < rows; i++)
         {
             for (int j = 0; j < cols; j++)
             {
-                float x = center.X - outerRhombusHeight / 2 + j * innerRhombusWidth + innerRhombusWidth / 2;
-                float y = center.Y - outerRhombusHeight / 2 + i * innerRhombusHeight + innerRhombusHeight / 2;
+                float x = center.X - roomHeight / 2 + j * tileWidth + tileWidth / 2;
+                float y = center.Y - roomHeight / 2 + i * tileHeight + tileHeight / 2;
 
                 var ncursor = cursor.Normal();
 
-                if (new RectangleF(x, y, innerRhombusWidth, innerRhombusHeight).Contains(ncursor))
-                    DrawRhombus(g, Color.Red, x, y, innerRhombusWidth, innerRhombusHeight);
+                Color tileColor = Color.Brown;
+
+                if (new RectangleF(x, y, tileWidth, tileHeight).Contains(ncursor))
+                    DrawRhombus(g, GetDarkerColor(tileColor), x, y, tileWidth, tileHeight);
                 else 
-                    DrawRhombus(g, Color.DarkRed, x, y, innerRhombusWidth, innerRhombusHeight);
+                    DrawRhombus(g, tileColor, x, y, tileWidth, tileHeight);
             }
         }
     }
-    private void DrawRhombus(Graphics g, Color color, float x, float y, float width, float height)
+    
+    public void DrawWalls(Graphics g)
+    {        
+        var center = new PointF(
+            pictureBox.ClientSize.Width / 2,
+            pictureBox.ClientSize.Height / 2
+        ).Normal();
+
+        PointF[] vertex = DrawRhombus(g, Color.Transparent, center.X, center.Y, roomWidth, roomHeight);
+
+        PointF rightVertex = vertex[1]; 
+        PointF topVertex = vertex[2];
+        PointF leftVertex = vertex[3]; 
+
+        // g.DrawLine(Pens.Blue, leftVertex, new PointF(leftVertex.X, leftVertex.Y - 200));
+        // g.DrawLine(Pens.Blue, rightVertex, new PointF(rightVertex.X, rightVertex.Y - 200));
+        // g.DrawLine(Pens.Blue, topVertex, new PointF(topVertex.X, topVertex.Y - 200));
+
+        PointF[] leftWall = new PointF[] 
+        {
+            leftVertex,
+            new PointF(leftVertex.X, leftVertex.Y - 250),
+            new PointF(topVertex.X, topVertex.Y - 250),
+            topVertex
+        };
+
+        PointF[] leftWall3D = new PointF[] 
+        {
+            new PointF(leftVertex.X - 10, leftVertex.Y),
+            new PointF(leftVertex.X - 10, leftVertex.Y - 260),
+            new PointF(topVertex.X, topVertex.Y - 265),
+            new PointF(topVertex.X, topVertex.Y - 250),
+            new PointF(leftVertex.X, leftVertex.Y - 250),
+            leftVertex
+        };
+
+        PointF[] rightWall = new PointF[] 
+        {
+            rightVertex,
+            new PointF(rightVertex.X, rightVertex.Y - 250),
+            new PointF(topVertex.X, topVertex.Y - 250),
+            topVertex
+        };
+
+        PointF[] rightWall3D = new PointF[] 
+        {
+            new PointF(rightVertex.X + 10, rightVertex.Y),
+            new PointF(rightVertex.X + 10, rightVertex.Y - 260),
+            new PointF(topVertex.X, topVertex.Y - 265),
+            new PointF(topVertex.X, topVertex.Y - 250),
+            new PointF(rightVertex.X, rightVertex.Y - 250),
+            rightVertex
+        };
+
+        Brush LeftWallColor = new SolidBrush(Color.Gray);
+        Brush RightWallColor = new SolidBrush(Color.DarkGray);
+
+        g.FillPolygon(LeftWallColor, leftWall);
+        g.FillPolygon(GetDarkerBrush(LeftWallColor), leftWall3D);
+        g.FillPolygon(RightWallColor, rightWall);
+        g.FillPolygon(GetDarkerBrush(RightWallColor), rightWall3D);
+    }
+    private PointF[] DrawRhombus(Graphics g, Color color, float x, float y, float width, float height, Color outlineColor = default)
     {
         PointF[] points = (x - (width / 2), y - (height / 2), width, height)
             .Rectangle()
             .Isometric();
 
         using (SolidBrush brush = new SolidBrush(color))
+        using (Pen pen = new Pen(outlineColor))
         {
             g.FillPolygon(brush, points);
+            g.DrawPolygon(pen, points);
         }
+
+        return points;
     }
 
-    private void DrawWalls(Graphics g)
+    Brush GetDarkerBrush(Brush originalBrush)
     {
-        int outerRhombusWidth = 500;
-        int outerRhombusHeight = 500;
+        Color originalColor = ((SolidBrush)originalBrush).Color;
 
-        var center = new PointF(
-            pictureBox.ClientSize.Width / 2,
-            pictureBox.ClientSize.Height / 2
-        );
+        float factor = 0.8f;
 
-        float startXLeft = center.X - outerRhombusWidth / 1.5f;
-        float startYLeft = center.Y;
-        float endXLeft = center.X - outerRhombusWidth / 1.5f;
-        float endYLeft = center.Y - 150;
+        int red = (int)(originalColor.R * factor);
+        int green = (int)(originalColor.G * factor);
+        int blue = (int)(originalColor.B * factor);
 
-        // Linha superior
-        g.DrawLine(Pens.Blue, startXLeft, startYLeft, endXLeft, endYLeft);
+        Color darkerColor = Color.FromArgb(red, green, blue);
 
-        // Linha superior direita
-        float startXUp = center.X;
-        float startYUp = center.Y - 175;
-        float endXUp = center.X;
-        float endYUp = center.Y - 325;
-        g.DrawLine(Pens.Blue, startXUp, startYUp, endXUp, endYUp);
+        return new SolidBrush(darkerColor);
+    }
 
-        float startXRight = center.X + outerRhombusWidth / 1.5f;
-        float startYRight = center.Y;
-        float endXRight = center.X + outerRhombusWidth / 1.5f;
-        float endYRight = center.Y - 150;
-        g.DrawLine(Pens.Blue, startXRight, startYRight, endXRight, endYRight);
+    private Color GetDarkerColor(Color originalColor)
+    {
+        float factor = 0.8f;
 
-        g.DrawLine(Pens.Blue, endXLeft, endYLeft, endXUp, endYUp);
-        g.DrawLine(Pens.Blue, endXUp, endYUp, endXRight, endYRight);
+        int red = (int)(originalColor.R * factor);
+        int green = (int)(originalColor.G * factor);
+        int blue = (int)(originalColor.B * factor);
+
+        return Color.FromArgb(red, green, blue);
     }
 }

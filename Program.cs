@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Runtime.Intrinsics.X86;
 using System.Windows.Forms;
-using Microsoft.VisualBasic.Devices;
 
 ApplicationConfiguration.Initialize();
 
@@ -27,6 +23,7 @@ Room room = new Room(pb);
 tm.Tick += delegate
 {
     room.DrawFloor(g);
+    room.DrawWalls(g);
     player.Draw(g);
     pb.Refresh();
 };
@@ -45,10 +42,10 @@ form.Load += delegate
     tm.Start();
 };
 
-// pb.Paint += (o, e) =>
-// {
-//     player.Draw(e.Graphics);
-// };
+pb.Paint += (o, e) =>
+{
+    player.Draw(e.Graphics);
+};
 
 pb.MouseMove += (o, e) =>
 {
