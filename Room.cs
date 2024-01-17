@@ -6,10 +6,12 @@ using Microsoft.VisualBasic;
 
 public class Room
 {
-    private int roomWidth { get; set; } = 500;
-    private int roomHeight { get; set; } = 500;
-    private int tileWidth { get; set; } = 50;
-    private int tileHeight { get; set; } = 50;
+    public float RoomWidth { get; private set; } = 750;
+    public float RoomHeight { get; private set; } = 350;
+    public float RoomDepth { get; private set; } = 20;
+    
+    private const int tileWidth = 50;
+    private const int tileHeight = 50;
     private PictureBox pictureBox;
   
     private PointF cursor = PointF.Empty;
@@ -43,35 +45,39 @@ public class Room
 
     public void DrawFloor(Graphics g)
     {        
+        Color tileColor = Color.Brown;
         var center = new PointF(
             pictureBox.ClientSize.Width / 2,
             pictureBox.ClientSize.Height / 2
         ).Normal();
 
-        DrawRhombus(g, Color.Transparent, center.X, center.Y, roomWidth, roomHeight);
+        drawParallelepiped(g, 
+            center.X - (RoomWidth / 2), 
+            center.Y - (RoomHeight / 2), 
+            RoomDepth, RoomWidth,
+            RoomHeight, RoomDepth,
+            tileColor
+        );
 
-        int rows = roomHeight / tileHeight;
-        int cols = roomWidth / tileWidth;
+        int rows = (int)(RoomHeight / tileHeight);
+        int cols = (int)(RoomWidth / tileWidth);
 
         for (int i = 0; i < rows; i++)
         {
             for (int j = 0; j < cols; j++)
             {
-                float x = center.X - roomHeight / 2 + j * tileWidth + tileWidth / 2;
-                float y = center.Y - roomHeight / 2 + i * tileHeight + tileHeight / 2;
+                float x = center.X - RoomHeight / 2 + j * tileWidth + tileWidth / 2;
+                float y = center.Y - RoomHeight / 2 + i * tileHeight + tileHeight / 2;
 
                 var ncursor = cursor.Normal();
 
-                Color tileColor = Color.Brown;
-
                 if (new RectangleF(x, y, tileWidth, tileHeight).Contains(ncursor))
                     DrawRhombus(g, GetDarkerColor(tileColor), x, y, tileWidth, tileHeight);
-                else 
-                    DrawRhombus(g, tileColor, x, y, tileWidth, tileHeight);
             }
         }
     }
-    
+
+
     public void DrawWalls(Graphics g)
     {        
         var center = new PointF(
@@ -79,65 +85,97 @@ public class Room
             pictureBox.ClientSize.Height / 2
         ).Normal();
 
-        PointF[] vertex = DrawRhombus(g, Color.Transparent, center.X, center.Y, roomWidth, roomHeight);
+        drawParallelepiped(g,
+            center.X - (RoomWidth / 2), 
+            center.Y + (RoomHeight / 2), 
+            -230,
+            RoomWidth + 20, 20, 270,
+            Color.Gray
+        );
 
-        PointF rightVertex = vertex[1]; 
-        PointF topVertex = vertex[2];
-        PointF leftVertex = vertex[3]; 
+        drawParallelepiped(g,
+            center.X + (RoomWidth / 2), 
+            center.Y - (RoomHeight / 2), 
+            -230,
+            20, RoomHeight, 270,
+            Color.Gray
+        );
 
-        // g.DrawLine(Pens.Blue, leftVertex, new PointF(leftVertex.X, leftVertex.Y - 200));
-        // g.DrawLine(Pens.Blue, rightVertex, new PointF(rightVertex.X, rightVertex.Y - 200));
-        // g.DrawLine(Pens.Blue, topVertex, new PointF(topVertex.X, topVertex.Y - 200));
 
-        PointF[] leftWall = new PointF[] 
-        {
-            leftVertex,
-            new PointF(leftVertex.X, leftVertex.Y - 250),
-            new PointF(topVertex.X, topVertex.Y - 250),
-            topVertex
-        };
+        // var center = new PointF(
+        //     pictureBox.ClientSize.Width / 2,
+        //     pictureBox.ClientSize.Height / 2
+        // ).Normal();
+        
+        // var vertex = GetVertex(center.X, center.Y, RoomWidth, RoomHeight);
 
-        PointF[] leftWall3D = new PointF[] 
-        {
-            new PointF(leftVertex.X - 10, leftVertex.Y),
-            new PointF(leftVertex.X - 10, leftVertex.Y - 260),
-            new PointF(topVertex.X, topVertex.Y - 265),
-            new PointF(topVertex.X, topVertex.Y - 250),
-            new PointF(leftVertex.X, leftVertex.Y - 250),
-            leftVertex
-        };
+        // PointF rightVertex = vertex[1]; 
+        // PointF topVertex = vertex[2];
+        // PointF leftVertex = vertex[3]; 
 
-        PointF[] rightWall = new PointF[] 
-        {
-            rightVertex,
-            new PointF(rightVertex.X, rightVertex.Y - 250),
-            new PointF(topVertex.X, topVertex.Y - 250),
-            topVertex
-        };
+        // PointF[] leftWall = new PointF[] 
+        // {
+        //     leftVertex,
+        //     new PointF(leftVertex.X, leftVertex.Y - 250),
+        //     new PointF(topVertex.X, topVertex.Y - 250),
+        //     topVertex
+        // };
 
-        PointF[] rightWall3D = new PointF[] 
-        {
-            new PointF(rightVertex.X + 10, rightVertex.Y),
-            new PointF(rightVertex.X + 10, rightVertex.Y - 260),
-            new PointF(topVertex.X, topVertex.Y - 265),
-            new PointF(topVertex.X, topVertex.Y - 250),
-            new PointF(rightVertex.X, rightVertex.Y - 250),
-            rightVertex
-        };
+        // PointF[] leftWall3D = new PointF[] 
+        // {
+        //     new PointF(leftVertex.X - 10, leftVertex.Y + 10),
+        //     new PointF(leftVertex.X - 10, leftVertex.Y - 260),
+        //     new PointF(topVertex.X, topVertex.Y - 265),
+        //     new PointF(topVertex.X, topVertex.Y - 250),
+        //     new PointF(leftVertex.X, leftVertex.Y - 250),
+        //     new PointF(leftVertex.X, leftVertex.Y + 15)
+        // };
 
-        Brush LeftWallColor = new SolidBrush(Color.Gray);
-        Brush RightWallColor = new SolidBrush(Color.DarkGray);
+        // PointF[] rightWall = new PointF[] 
+        // {
+        //     rightVertex,
+        //     new PointF(rightVertex.X, rightVertex.Y - 250),
+        //     new PointF(topVertex.X, topVertex.Y - 250),
+        //     topVertex
+        // };
 
-        g.FillPolygon(LeftWallColor, leftWall);
-        g.FillPolygon(GetDarkerBrush(LeftWallColor), leftWall3D);
-        g.FillPolygon(RightWallColor, rightWall);
-        g.FillPolygon(GetDarkerBrush(RightWallColor), rightWall3D);
+        // PointF[] rightWall3D = new PointF[] 
+        // {
+        //     new PointF(rightVertex.X + 10, rightVertex.Y + 10),
+        //     new PointF(rightVertex.X + 10, rightVertex.Y - 260),
+        //     new PointF(topVertex.X, topVertex.Y - 265),
+        //     new PointF(topVertex.X, topVertex.Y - 250),
+        //     new PointF(rightVertex.X, rightVertex.Y - 250),
+        //     new PointF(rightVertex.X, rightVertex.Y + 15)
+        // };
+
+        // Brush LeftWallColor = new SolidBrush(Color.Gray);
+        // Brush RightWallColor = new SolidBrush(Color.DarkGray);
+
+        // g.FillPolygon(LeftWallColor, leftWall);
+        // g.FillPolygon(GetDarkerBrush(LeftWallColor), leftWall3D);
+        // g.FillPolygon(RightWallColor, rightWall);
+        // g.FillPolygon(GetDarkerBrush(RightWallColor), rightWall3D);
     }
-    private PointF[] DrawRhombus(Graphics g, Color color, float x, float y, float width, float height, Color outlineColor = default)
+
+    private void drawParallelepiped(Graphics g, float x, float y, float z, float width, float height, float depth, Color baseColor)
+    {
+        PointF[][] chao = (x, y, z, width, height, depth)
+            .Parallelepiped()
+            .Isometric();
+        Brush brush = new SolidBrush(baseColor);
+        foreach (var face in chao)
+        {
+            g.FillPolygon(brush, face);
+            brush = GetDarkerBrush(brush);
+        }
+    }
+    
+    private void DrawRhombus(Graphics g, Color color, float x, float y, float width, float height, Color outlineColor = default)
     {
         PointF[] points = (x - (width / 2), y - (height / 2), width, height)
             .Rectangle()
-            .Isometric();
+            .Isometric(20);
 
         using (SolidBrush brush = new SolidBrush(color))
         using (Pen pen = new Pen(outlineColor))
@@ -145,6 +183,13 @@ public class Room
             g.FillPolygon(brush, points);
             g.DrawPolygon(pen, points);
         }
+    }
+
+    private PointF[] GetVertex(float x, float y, float width, float height)
+    {
+        PointF[] points = (x - (width / 2), y - (height / 2), width, height)
+            .Rectangle()
+            .Isometric();
 
         return points;
     }
