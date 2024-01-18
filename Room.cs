@@ -6,6 +6,7 @@ using Microsoft.VisualBasic;
 
 public class Room
 {
+    public PointF NormalSelection { get; private set; }
     public float RoomWidth { get; private set; } = 750;
     public float RoomHeight { get; private set; } = 350;
     public float RoomDepth { get; private set; } = 20;
@@ -45,7 +46,7 @@ public class Room
 
     public void DrawFloor(Graphics g)
     {        
-        Color tileColor = Color.Brown;
+        Color tileColor = Color.Pink;
         var center = new PointF(
             pictureBox.ClientSize.Width / 2,
             pictureBox.ClientSize.Height / 2
@@ -66,13 +67,20 @@ public class Room
         {
             for (int j = 0; j < cols; j++)
             {
-                float x = center.X - RoomHeight / 2 + j * tileWidth + tileWidth / 2;
-                float y = center.Y - RoomHeight / 2 + i * tileHeight + tileHeight / 2;
+                float x = center.X - RoomWidth / 2 + j * tileWidth;
+                float y = center.Y - RoomHeight / 2 + i * tileHeight;
 
-                var ncursor = cursor.Normal();
+                var ncursor = cursor.Normal(20);
 
                 if (new RectangleF(x, y, tileWidth, tileHeight).Contains(ncursor))
-                    DrawRhombus(g, GetDarkerColor(tileColor), x, y, tileWidth, tileHeight);
+                {
+                    drawParallelepiped(g, 
+                        x, y, RoomDepth + 2, 
+                        tileWidth, tileHeight, 2,
+                        GetDarkerColor(tileColor)
+                    );
+                    this.NormalSelection = new PointF(x, y);
+                }
             }
         }
     }
@@ -90,7 +98,7 @@ public class Room
             center.Y + (RoomHeight / 2), 
             -230,
             RoomWidth + 20, 20, 270,
-            Color.Gray
+            Color.Purple
         );
 
         drawParallelepiped(g,
@@ -98,64 +106,8 @@ public class Room
             center.Y - (RoomHeight / 2), 
             -230,
             20, RoomHeight, 270,
-            Color.Gray
+            Color.Purple
         );
-
-
-        // var center = new PointF(
-        //     pictureBox.ClientSize.Width / 2,
-        //     pictureBox.ClientSize.Height / 2
-        // ).Normal();
-        
-        // var vertex = GetVertex(center.X, center.Y, RoomWidth, RoomHeight);
-
-        // PointF rightVertex = vertex[1]; 
-        // PointF topVertex = vertex[2];
-        // PointF leftVertex = vertex[3]; 
-
-        // PointF[] leftWall = new PointF[] 
-        // {
-        //     leftVertex,
-        //     new PointF(leftVertex.X, leftVertex.Y - 250),
-        //     new PointF(topVertex.X, topVertex.Y - 250),
-        //     topVertex
-        // };
-
-        // PointF[] leftWall3D = new PointF[] 
-        // {
-        //     new PointF(leftVertex.X - 10, leftVertex.Y + 10),
-        //     new PointF(leftVertex.X - 10, leftVertex.Y - 260),
-        //     new PointF(topVertex.X, topVertex.Y - 265),
-        //     new PointF(topVertex.X, topVertex.Y - 250),
-        //     new PointF(leftVertex.X, leftVertex.Y - 250),
-        //     new PointF(leftVertex.X, leftVertex.Y + 15)
-        // };
-
-        // PointF[] rightWall = new PointF[] 
-        // {
-        //     rightVertex,
-        //     new PointF(rightVertex.X, rightVertex.Y - 250),
-        //     new PointF(topVertex.X, topVertex.Y - 250),
-        //     topVertex
-        // };
-
-        // PointF[] rightWall3D = new PointF[] 
-        // {
-        //     new PointF(rightVertex.X + 10, rightVertex.Y + 10),
-        //     new PointF(rightVertex.X + 10, rightVertex.Y - 260),
-        //     new PointF(topVertex.X, topVertex.Y - 265),
-        //     new PointF(topVertex.X, topVertex.Y - 250),
-        //     new PointF(rightVertex.X, rightVertex.Y - 250),
-        //     new PointF(rightVertex.X, rightVertex.Y + 15)
-        // };
-
-        // Brush LeftWallColor = new SolidBrush(Color.Gray);
-        // Brush RightWallColor = new SolidBrush(Color.DarkGray);
-
-        // g.FillPolygon(LeftWallColor, leftWall);
-        // g.FillPolygon(GetDarkerBrush(LeftWallColor), leftWall3D);
-        // g.FillPolygon(RightWallColor, rightWall);
-        // g.FillPolygon(GetDarkerBrush(RightWallColor), rightWall3D);
     }
 
     private void drawParallelepiped(Graphics g, float x, float y, float z, float width, float height, float depth, Color baseColor)
@@ -163,6 +115,7 @@ public class Room
         PointF[][] chao = (x, y, z, width, height, depth)
             .Parallelepiped()
             .Isometric();
+
         Brush brush = new SolidBrush(baseColor);
         foreach (var face in chao)
         {
@@ -185,20 +138,11 @@ public class Room
         }
     }
 
-    private PointF[] GetVertex(float x, float y, float width, float height)
-    {
-        PointF[] points = (x - (width / 2), y - (height / 2), width, height)
-            .Rectangle()
-            .Isometric();
-
-        return points;
-    }
-
     Brush GetDarkerBrush(Brush originalBrush)
     {
         Color originalColor = ((SolidBrush)originalBrush).Color;
 
-        float factor = 0.8f;
+        float factor = 0.9f;
 
         int red = (int)(originalColor.R * factor);
         int green = (int)(originalColor.G * factor);

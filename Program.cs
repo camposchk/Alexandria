@@ -24,7 +24,7 @@ tm.Tick += delegate
 {
     room.DrawFloor(g);
     room.DrawWalls(g);
-    player.Draw(g);
+    player.Draw(g, player.X, player.Y, player.Z, player.Height, player.Width, player.Depth, Color.Yellow);
     pb.Refresh();
 };
 
@@ -44,12 +44,19 @@ form.Load += delegate
 
 pb.Paint += (o, e) =>
 {
-    player.Draw(e.Graphics);
+    player.Draw(e.Graphics, player.X, player.Y, player.Z, player.Width, player.Height, player.Depth, Color.Yellow);
+    player.Draw(e.Graphics, 1350, -1200, 1150, 70, 70, 140, Color.Yellow);
+    player.Move();
 };
 
 pb.MouseMove += (o, e) =>
 {
     cursor = e.Location;
+};
+
+pb.MouseDown += (o, e) =>
+{
+    player.StartMove(room.NormalSelection);
 };
 
 Application.Run(form);
