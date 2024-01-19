@@ -8,7 +8,7 @@ public class Room
 {
     public PointF NormalSelection { get; private set; }
     public float RoomWidth { get; private set; } = 750;
-    public float RoomHeight { get; private set; } = 350;
+    public float RoomHeight { get; private set; } = 550;
     public float RoomDepth { get; private set; } = 20;
     
     private const int tileWidth = 50;

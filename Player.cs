@@ -37,8 +37,8 @@ public class Player
         if (mod < 10)
             return;
 
-        dx *= 20 / mod;
-        dy *= 20 / mod;
+        dx *= 10 / mod;
+        dy *= 10 / mod;
 
         X += dx;
         Y += dy;
