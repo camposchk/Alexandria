@@ -9,6 +9,7 @@ public class Player
     public float Width { get; set; } = 50;
     public float Height { get; set; } = 50;
     public float Depth { get; set; } = 100;
+    public int Ruby { get; set; } = 100;
 
     public void Draw(Graphics g, float x, float y, float z, float width, float height, float depth, Color baseColor)
     {
