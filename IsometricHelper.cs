@@ -82,22 +82,22 @@ public static class IsometricHelper
         (float x, float y, float z, float width, float height, float depth) = tuple;
         return new Vector3[][] {
             new Vector3[] {
-                new Vector3(x, y, z),
-                new Vector3(x + width, y, z),
-                new Vector3(x + width, y + height, z),
-                new Vector3(x, y + height, z),
+                new(x, y, z),
+                new(x + width, y, z),
+                new(x + width, y + height, z),
+                new(x, y + height, z),
             },
             new Vector3[] {
-                new Vector3(x, y, z),
-                new Vector3(x + width, y, z),
-                new Vector3(x + width, y, z + depth),
-                new Vector3(x, y, z + depth),
+                new(x, y, z),
+                new(x + width, y, z),
+                new(x + width, y, z + depth),
+                new(x, y, z + depth),
             },
             new Vector3[] {
-                new Vector3(x, y, z),
-                new Vector3(x, y + height, z),
-                new Vector3(x, y + height, z + depth),
-                new Vector3(x, y, z + depth),
+                new(x, y, z),
+                new(x, y + height, z),
+                new(x, y + height, z + depth),
+                new(x, y, z + depth),
             },
         };
     }
@@ -105,20 +105,20 @@ public static class IsometricHelper
     public static PointF[] Rectangle(this (float x, float y, float width, float height) tuple)
     {
         return new PointF[] {
-            new PointF(tuple.x, tuple.y),
-            new PointF(tuple.x + tuple.width, tuple.y),
-            new PointF(tuple.x + tuple.width, tuple.y + tuple.height),
-            new PointF(tuple.x, tuple.y + tuple.height),
+            new(tuple.x, tuple.y),
+            new(tuple.x + tuple.width, tuple.y),
+            new(tuple.x + tuple.width, tuple.y + tuple.height),
+            new(tuple.x, tuple.y + tuple.height),
         };
     }
 
     public static PointF[] Rectangle(this (int x, int y, int width, int height) tuple)
     {
         return new PointF[] {
-            new PointF(tuple.x, tuple.y),
-            new PointF(tuple.x + tuple.width, tuple.y),
-            new PointF(tuple.x + tuple.width, tuple.y + tuple.height),
-            new PointF(tuple.x, tuple.y + tuple.height),
+            new(tuple.x, tuple.y),
+            new(tuple.x + tuple.width, tuple.y),
+            new(tuple.x + tuple.width, tuple.y + tuple.height),
+            new(tuple.x, tuple.y + tuple.height),
         };
     }
 }

@@ -54,9 +54,10 @@ public partial class RoomForm : Form
 
         Load += (o, e) =>
         {
-            Bitmap bitmap = new Bitmap(pb.Width, pb.Height);
+            Bitmap bitmap = new(pb.Width, pb.Height);
             g = Graphics.FromImage(bitmap);
             tm.Start();
+            menu.InitializeMenu();
         };
 
         pb.Paint += (o, e) =>
@@ -71,25 +72,27 @@ public partial class RoomForm : Form
         pb.MouseDown += (o, e) =>
         {
             player.StartMove(room.NormalSelection);
-            
-            // Rectangle buttonBounds = new Rectangle(1755, 800, 200, 200);
-            // g.FillRectangle(Brushes.Red, buttonBounds);
 
-            // if (buttonBounds.Contains(e.Location))
-            //     menu.Toggle();
-
+            if (menu.IsActive)
+            {
+                menu.SelectItem(e.Location);
+            }
         };
 
         pb.MouseMove += (o, e) =>
         {
             Rectangle screenBounds = Screen.FromControl(pb).Bounds;
-            Rectangle triggerBounds = new Rectangle(screenBounds.Right - 50, screenBounds.Top, 50, screenBounds.Height);
+            Rectangle triggerBounds;
+
+            if (menu.IsActive)
+                triggerBounds = new Rectangle(screenBounds.Right - 200, screenBounds.Top, 200, screenBounds.Height);
+            else
+                triggerBounds = new Rectangle(screenBounds.Right - 50, screenBounds.Top, 50, screenBounds.Height);
 
             bool isMouseOverTrigger = triggerBounds.Contains(Cursor.Position);
 
             if (isMouseOverTrigger && !menu.IsActive)
                 menu.Toggle();
-                
             if (!isMouseOverTrigger && menu.IsActive)
                 menu.Toggle();
         };

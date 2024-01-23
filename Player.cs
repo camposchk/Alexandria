@@ -25,7 +25,7 @@ public class Player
         }
     }
 
-    private PointF target = new PointF(300, 300);
+    private PointF target = new(300, 300);
     public void StartMove(PointF destiny)
     {
         target = destiny;

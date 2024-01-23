@@ -14,6 +14,8 @@ public class Room
     private const int tileWidth = 50;
     private const int tileHeight = 50;
     private PictureBox pictureBox;
+
+    bool IsTaken = true;
   
     private PointF cursor = PointF.Empty;
     public Room(PictureBox pictureBox)
@@ -74,11 +76,22 @@ public class Room
 
                 if (new RectangleF(x, y, tileWidth, tileHeight).Contains(ncursor))
                 {
-                    drawParallelepiped(g, 
-                        x, y, RoomDepth + 2, 
-                        tileWidth, tileHeight, 2,
-                        GetDarkerColor(tileColor)
-                    );
+                    if (!IsTaken)
+                    {
+                        drawParallelepiped(g, 
+                            x, y, RoomDepth + 2, 
+                            tileWidth, tileHeight, 2,
+                            GetDarkerColor(Color.Red)
+                        );
+                    }
+                    else
+                    {
+                        drawParallelepiped(g, 
+                            x, y, RoomDepth + 2, 
+                            tileWidth, tileHeight, 2,
+                            GetDarkerColor(tileColor)
+                        );
+                    }
                     this.NormalSelection = new PointF(x, y);
                 }
             }
