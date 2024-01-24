@@ -3,9 +3,9 @@ using System.Drawing;
 
 public class Player 
 {
-    public float X { get; set; } = 300;
-    public float Y { get; set; } = 200;
-    public float Z { get; set; } = 300;
+    public float X { get; set; } = 0;
+    public float Y { get; set; } = 0;
+    public float Z { get; set; } = 0;
     public float Width { get; set; } = 50;
     public float Height { get; set; } = 50;
     public float Depth { get; set; } = 100;

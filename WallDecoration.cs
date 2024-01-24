@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-public class FloorDecoration
+public class WallDecoration
 {
     public float X { get; set; }
     public float Y { get; set; }
@@ -13,7 +13,7 @@ public class FloorDecoration
     public int TileSize { get; set; }
     public List<Image> Items { get; set; }
 
-    public FloorDecoration(float x, float y, float z, float width, float height, float depth, int tilesize, string imgPath)
+    public WallDecoration(float x, float y, float z, float width, float height, float depth, int tilesize, string imgPath)
     {
         this.X = x;
         this.Y = y;
@@ -25,15 +25,4 @@ public class FloorDecoration
 
         this.Items = new(){Bitmap.FromFile(imgPath)};
     }
-
-    public void Move()
-    {
-
-    }
-
-    public void Spin()
-    {
-        
-    }
-
 }

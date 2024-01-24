@@ -16,6 +16,8 @@ public class Menu
     public Label Leilao = new();
     public Label Oraculo = new();
 
+    private Graphics g;
+
     private Rectangle menu { get; set; }
 
     private Rectangle[] items = new Rectangle[4];
@@ -67,6 +69,11 @@ public class Menu
         }
     }
 
+    public void DrawItems(Graphics g)
+    {
+
+    }
+
     public void SelectItem(Point mouseLocation)
     {
         if (IsActive)
@@ -90,7 +97,7 @@ public class Menu
                 MessageBox.Show("Clicou no primeiro item!");
                 break;
             case 1:
-                MessageBox.Show("Clicou no segundo item!");
+                MessageBox.Show("aaaaaaaaa");
                 break;
             case 2:
                 MessageBox.Show("Clicou no terceiro item!");
@@ -100,5 +107,9 @@ public class Menu
                 break;
         }
     }
-    
+
+    private void OpenShop()
+    {
+        g.DrawRectangle(Pens.Red, 100, 100, 200, 200);
+    }
 }
