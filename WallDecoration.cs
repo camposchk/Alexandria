@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-public class WallDecoration
+public class WallDecoration : IDecoration
 {
     public float X { get; set; }
     public float Y { get; set; }
@@ -26,5 +26,13 @@ public class WallDecoration
         this.Items = new(){Bitmap.FromFile(imgPath)};
     }
 
-    
+    public void Move()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void Spin()
+    {
+        throw new System.NotImplementedException();
+    }
 }

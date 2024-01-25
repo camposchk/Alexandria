@@ -15,7 +15,7 @@ public partial class Game : Form
     private WallDecoration wallDecoration;
     private FloorDecoration floorDecoration;
     private FloorDecoration[] floorDecorationItems;
-    private int index = 0;
+    private int index = 1;
     
 
     public Game()
@@ -80,6 +80,7 @@ public partial class Game : Form
             menu.Draw(e.Graphics);
 
             floorDecoration.Draw(e.Graphics, floorDecorationItems[index]);
+            // floorDecoration.DrawRec(e.Graphics, floorDecorationItems[index]);
         };
 
         pb.MouseDown += (o, e) =>
@@ -114,4 +115,3 @@ public partial class Game : Form
         Controls.Add(pb);
     }
 }
-

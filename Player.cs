@@ -12,7 +12,7 @@ public class Player
     public float Depth { get; set; } = 100;
     public int Ruby { get; set; } = 100;
 
-     private List<IPlayerOutfit> outfits = new List<IPlayerOutfit>();
+    private List<IPlayerOutfit> outfits = new List<IPlayerOutfit>();
 
     public void AddOutfit(IPlayerOutfit outfit)
     {
