@@ -13,10 +13,10 @@ public class Menu
 
     public Label Inventario = new();
     public Label Mercado = new();
-    public Label Leilao = new();
+    public Label Creator = new();
     public Label Oraculo = new();
 
-    private Graphics g;
+    // private Graphics g;
 
     private Rectangle menu { get; set; }
 
@@ -108,8 +108,8 @@ public class Menu
         }
     }
 
-    private void OpenShop()
-    {
-        g.DrawRectangle(Pens.Red, 100, 100, 200, 200);
-    }
+    // private void OpenShop()
+    // {
+    //     g.DrawRectangle(Pens.Red, 100, 100, 200, 200);
+    // }
 }

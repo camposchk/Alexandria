@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-public partial class RoomForm : Form
+public partial class Game : Form
 {
     private PictureBox pb;
     private Timer tm;
@@ -12,8 +12,13 @@ public partial class RoomForm : Form
     private Menu menu;
 
     private Label ruby;
+    private WallDecoration wallDecoration;
+    private FloorDecoration floorDecoration;
+    private FloorDecoration[] floorDecorationItems;
+    private int index = 0;
+    
 
-    public RoomForm()
+    public Game()
     {
         InitializeComponent();
     }
@@ -36,8 +41,13 @@ public partial class RoomForm : Form
 
 
         player = new Player();
+        player.AddOutfit(new HatOutfit());
+        player.AddOutfit(new ShirtOutfit());
+
         room = new Room(pb);
         menu = new Menu(pb);
+        floorDecoration = new();
+        
 
         ruby = new Label()
         {
@@ -58,6 +68,7 @@ public partial class RoomForm : Form
             g = Graphics.FromImage(bitmap);
             tm.Start();
             menu.InitializeMenu();
+            floorDecorationItems = floorDecoration.GetFloorDecorations();
         };
 
         pb.Paint += (o, e) =>
@@ -67,6 +78,8 @@ public partial class RoomForm : Form
             player.Move();
 
             menu.Draw(e.Graphics);
+
+            floorDecoration.Draw(e.Graphics, floorDecorationItems[index]);
         };
 
         pb.MouseDown += (o, e) =>

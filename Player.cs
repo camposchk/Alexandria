@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 public class Player 
@@ -11,6 +12,13 @@ public class Player
     public float Depth { get; set; } = 100;
     public int Ruby { get; set; } = 100;
 
+     private List<IPlayerOutfit> outfits = new List<IPlayerOutfit>();
+
+    public void AddOutfit(IPlayerOutfit outfit)
+    {
+        outfits.Add(outfit);
+    }
+
     public void Draw(Graphics g, float x, float y, float z, float width, float height, float depth, Color baseColor)
     {
         PointF[][] player = (x, y, 20f - depth, width, height, depth)
@@ -22,6 +30,11 @@ public class Player
         {
             g.FillPolygon(brush, face);
             brush = GetDarkerBrush(brush);
+        }
+
+        foreach (var outfit in outfits)
+        {
+            outfit.Draw(g, this);
         }
     }
 
@@ -45,7 +58,7 @@ public class Player
         Y += dy;
     }
 
-    Brush GetDarkerBrush(Brush originalBrush)
+    public Brush GetDarkerBrush(Brush originalBrush)
     {
         Color originalColor = ((SolidBrush)originalBrush).Color;
 

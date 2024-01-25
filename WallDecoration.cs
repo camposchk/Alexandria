@@ -25,4 +25,6 @@ public class WallDecoration
 
         this.Items = new(){Bitmap.FromFile(imgPath)};
     }
+
+    
 }

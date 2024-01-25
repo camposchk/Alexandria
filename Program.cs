@@ -7,6 +7,6 @@ ApplicationConfiguration.Initialize();
 
 // if (loginResult == DialogResult.OK)
 // {
-    RoomForm roomForm = new();
-    Application.Run(roomForm);
+    Game game = new();
+    Application.Run(game);
 // }
