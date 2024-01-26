@@ -12,7 +12,7 @@ public partial class Game : Form
     private Menu menu;
 
     private Label ruby;
-    private WallDecoration wallDecoration;
+    // private WallDecoration wallDecoration;
     private FloorDecoration floorDecoration;
     private FloorDecoration[] floorDecorationItems;
     private int index = 1;
@@ -48,7 +48,6 @@ public partial class Game : Form
         menu = new Menu(pb);
         floorDecoration = new();
         
-
         ruby = new Label()
         {
             Text = player.Ruby.ToString(),
@@ -66,6 +65,7 @@ public partial class Game : Form
         {
             Bitmap bitmap = new(pb.Width, pb.Height);
             g = Graphics.FromImage(bitmap);
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
             tm.Start();
             menu.InitializeMenu();
             floorDecorationItems = floorDecoration.GetFloorDecorations();
@@ -78,6 +78,10 @@ public partial class Game : Form
             player.Move();
 
             menu.Draw(e.Graphics);
+            if (menu.IsInventoryOpen) menu.OpenInventory(e.Graphics);
+            if (menu.IsShopOpen) menu.OpenShop(e.Graphics);
+            if (menu.IsCreatorOpen) menu.OpenCreator(e.Graphics);
+            if (menu.IsOracleOpen) menu.OpenOracle(e.Graphics);
 
             floorDecoration.Draw(e.Graphics, floorDecorationItems[index]);
             // floorDecoration.DrawRec(e.Graphics, floorDecorationItems[index]);
@@ -91,6 +95,9 @@ public partial class Game : Form
             {
                 menu.SelectItem(e.Location);
             }
+
+            floorDecoration.OnFloorDecorationClick(e.Location);
+
         };
 
         pb.MouseMove += (o, e) =>

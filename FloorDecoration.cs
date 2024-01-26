@@ -16,6 +16,10 @@ public class FloorDecoration : IDecoration
     public int TileSize { get; set; }
     public List<Image> Items { get; set; }
 
+    public List<RectangleF> Bounds { get; private set; } = new List<RectangleF>();
+
+    public bool MoveOn = false;
+
     public FloorDecoration(float x, float y, float z, float width, float height, float depth, int tilesize, string imgPath)
     {
         this.X = x;
@@ -30,11 +34,6 @@ public class FloorDecoration : IDecoration
     }
 
     public FloorDecoration() { }
-
-    public void Move(Point mouseLocation)
-    {
-
-    }
 
     public void Spin()
     {
@@ -91,6 +90,7 @@ public class FloorDecoration : IDecoration
 
             float width = maxX - minX;
             float height = maxY - minY;
+            Bounds.Add(new RectangleF(minX, minY, width, height));
 
             using (Pen pen = new Pen(Color.Red))
                 g.DrawRectangle(pen, minX, minY, width, height);
@@ -104,7 +104,6 @@ public class FloorDecoration : IDecoration
 
         if (item.Items.Count > 0)
         {
-            Image imageToDraw = item.Items[0];
             PointF[][] floorDecoration = (item.X, item.Y, item.Z, item.Width, item.Height, item.Depth)
                 .Parallelepiped()
                 .Isometric();
@@ -116,19 +115,28 @@ public class FloorDecoration : IDecoration
         }
     }
 
-    // public void OnFloorDecorationClick(Point mouseLocation)
-    // {
-    //     foreach(var item in fl o)
-    //     {
-    //         if (item.Contains(mouseLocation))
-    //         {
-    //             Move();
-    //         }
-    //     }
+    public void OnFloorDecorationClick(Point mouseLocation)
+    {
+        foreach (var bound in Bounds)
+        {
+            if (bound.Contains(mouseLocation))
+            {
+                MoveOn = !MoveOn;
+                Move(mouseLocation);
+            }
+        }
+    }
 
-    // }
+    public void Move(Point mouseLocation)
+    {
+        if (MoveOn)
+            MessageBox.Show("Movimento");
+        
+        else MessageBox.Show("sEM");
+        
+    }
 
-    public void Move()
+    public void Store()
     {
         throw new NotImplementedException();
     }

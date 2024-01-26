@@ -16,29 +16,48 @@ public partial class LoginForm : Form
 
     private void InitializeComponent()
     {
+        Image backgroundImage = Image.FromFile("./Images/darkroom.png");
+        double imageAspectRatio = (double)backgroundImage.Width / backgroundImage.Height;
 
-        WindowState = FormWindowState.Maximized;
-        BackColor = Color.Black;
-        // BackgroundImage = Image.FromFile("./Image/wallpaper.png");
-        // BackgroundImageLayout = ImageLayout.Stretch;
+        Rectangle screenRectangle = Screen.PrimaryScreen.Bounds;
+        int screenHeight = screenRectangle.Height;
+        int screenWidth = screenRectangle.Width;
+        double screenAspectRatio = (double)screenWidth / screenHeight;
+
+        int formWidth, formHeight;
+        if (screenAspectRatio > imageAspectRatio)
+        {
+            formHeight = screenHeight;
+            formWidth = (int)(formHeight * imageAspectRatio);
+        }
+        else
+        {
+            formWidth = screenWidth;
+            formHeight = (int)(formWidth / imageAspectRatio);
+        }
+
+        Size = new Size(formWidth, formHeight);
+        StartPosition = FormStartPosition.CenterScreen;
+        BackgroundImage = backgroundImage;
+        BackgroundImageLayout = ImageLayout.Stretch;
 
         pictureBox = new PictureBox
         {
-            Location = new Point(ClientSize.Width / 2 + 450, 80),
+            Location = new Point((Width - ClientSize.Width) / 2, 80),
             Image = Image.FromFile("./Images/alexandriaBlack.png"),
             SizeMode = PictureBoxSizeMode.AutoSize
         };
         
         usernameTextBox = new TextBox
         {
-            Location = new Point(ClientSize.Width / 2 + 725, pictureBox.Bottom + 80),
+            Location = new Point((Width - ClientSize.Width) / 2, pictureBox.Bottom + 80),
             Size = new Size(200, 25),
             PlaceholderText = "Username"
         };
 
         passwordTextBox = new TextBox
         {
-            Location = new Point(ClientSize.Width / 2 + 725, usernameTextBox.Bottom + 10),
+            Location = new Point((Width - ClientSize.Width) / 2, usernameTextBox.Bottom + 10),
             Size = new Size(200, 25),
             PasswordChar = '*',
             PlaceholderText = "Password"
@@ -46,7 +65,7 @@ public partial class LoginForm : Form
 
         loginButton = new Button
         {
-            Location = new Point(ClientSize.Width / 2 + 725, passwordTextBox.Bottom + 20),
+            Location = new Point((Width - ClientSize.Width) / 2, passwordTextBox.Bottom + 20),
             Size = new Size(200, 30),
             Text = "Login",
             BackColor = Color.White,

@@ -1,10 +1,17 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
 
 public class Menu
 {
+    public FloorDecoration FloorDecorations { get; set; }
+    public FloorDecoration[] FloorDecorationsItens { get; set; }
+    public bool IsInventoryOpen { get; private set; } = false;
+    public bool IsShopOpen { get; private set; } = false;
+    public bool IsCreatorOpen { get; private set; } = false;
+    public bool IsOracleOpen { get; private set; } = false;
     private PictureBox pictureBox;
     public bool IsActive;
 
@@ -12,11 +19,9 @@ public class Menu
     public int Width { get; private set; } = 200;
 
     public Label Inventario = new();
-    public Label Mercado = new();
+    public Label Shop = new();
     public Label Creator = new();
     public Label Oraculo = new();
-
-    // private Graphics g;
 
     private Rectangle menu { get; set; }
 
@@ -39,6 +44,9 @@ public class Menu
         items[1] = new(menu.Left + 50, items[0].Bottom + 100, 100, 100);
         items[2] = new(menu.Left + 50, items[1].Bottom + 100, 100, 100);
         items[3] = new(menu.Left + 50, items[2].Bottom + 100, 100, 100);
+
+        FloorDecorations = new FloorDecoration();
+        FloorDecorationsItens = FloorDecorations.GetFloorDecorations();
     }
 
     public void Toggle()
@@ -63,15 +71,10 @@ public class Menu
             g.FillRectangle(Brushes.Yellow, items[2]);
             g.FillRectangle(Brushes.Green, items[3]);
 
-            g.DrawString(Mercado.ToString(), new Font("Mexcellent3D-Regular", 18, FontStyle.Regular), Brushes.Red, new PointF(100, 100));
+            // g.DrawString(Shop.ToString(), new Font("Mexcellent3D-Regular", 18, FontStyle.Regular), Brushes.Red, new PointF(100, 100));
 
             // g.DrawImage(Logo, new PointF(pictureBox.ClientSize.Width - 125, 20));
         }
-    }
-
-    public void DrawItems(Graphics g)
-    {
-
     }
 
     public void SelectItem(Point mouseLocation)
@@ -91,25 +94,80 @@ public class Menu
 
     protected virtual void OnItemClick(int index)
     {
+        CloseAllMenus();
+
         switch (index)
         {
             case 0:
-                MessageBox.Show("Clicou no primeiro item!");
+                IsInventoryOpen = true;
                 break;
             case 1:
-                MessageBox.Show("aaaaaaaaa");
+                IsShopOpen = true;
                 break;
             case 2:
-                MessageBox.Show("Clicou no terceiro item!");
+                IsCreatorOpen = true;
                 break;
             case 3:
-                MessageBox.Show("Clicou no quarto item!");
+                IsOracleOpen = true;
                 break;
         }
     }
 
-    // private void OpenShop()
-    // {
-    //     g.DrawRectangle(Pens.Red, 100, 100, 200, 200);
-    // }
+    private void CloseAllMenus()
+    {
+        IsInventoryOpen = false;
+        IsShopOpen = false;
+        IsCreatorOpen = false;
+        IsOracleOpen = false;
+    }
+
+    public void OpenInventory(Graphics g)
+    {
+        Rectangle inventoryRect = new Rectangle(100, 100, pictureBox.ClientSize.Width / 2, pictureBox.ClientSize.Height / 2);
+        g.DrawRectangle(Pens.Red, inventoryRect);
+
+        int margin = 50;
+        int spacingBetweenImages = 10;
+        int maxColumns = 5; 
+        int imageSize = 50; 
+
+        int x = inventoryRect.X + margin;
+        int y = inventoryRect.Y + margin;
+
+        int column = 0; 
+
+        foreach (var floorDecoration in FloorDecorationsItens)
+        {
+            foreach(var image in floorDecoration.Items)
+            {
+                if (column >= maxColumns)
+                {
+                    column = 0;
+                    x = inventoryRect.X + margin;
+                    y += imageSize + spacingBetweenImages;
+                }
+
+                g.DrawImage(image, x, y, imageSize, imageSize);
+
+                x += imageSize + spacingBetweenImages;
+
+                column++;
+            }
+        }
+    }
+
+    public void OpenShop(Graphics g)
+    {
+        g.DrawRectangle(Pens.Green, 100, 100, pictureBox.ClientSize.Width / 2, pictureBox.ClientSize.Height / 2);
+    }
+
+    public void OpenCreator(Graphics g)
+    {
+        g.DrawRectangle(Pens.Yellow, 100, 100, pictureBox.ClientSize.Width / 2, pictureBox.ClientSize.Height / 2);
+    }
+
+    public void OpenOracle(Graphics g)
+    {
+        g.DrawRectangle(Pens.Blue, 100, 100, pictureBox.ClientSize.Width / 2, pictureBox.ClientSize.Height / 2);
+    }
 }

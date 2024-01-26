@@ -26,12 +26,17 @@ public class WallDecoration : IDecoration
         this.Items = new(){Bitmap.FromFile(imgPath)};
     }
 
-    public void Move()
+    public void Move(Point mouseLocation)
     {
         throw new System.NotImplementedException();
     }
 
     public void Spin()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void Store()
     {
         throw new System.NotImplementedException();
     }
