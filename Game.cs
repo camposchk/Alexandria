@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Text;
 using System.Windows.Forms;
 
 public partial class Game : Form
@@ -13,8 +14,7 @@ public partial class Game : Form
 
     private Label ruby;
     // private WallDecoration wallDecoration;
-    private FloorDecoration floorDecoration;
-    private FloorDecoration[] floorDecorationItems;
+    private FloorDecoration[] floorDecorations;
     private int index = 1;
     
 
@@ -46,7 +46,6 @@ public partial class Game : Form
 
         room = new Room(pb);
         menu = new Menu(pb);
-        floorDecoration = new();
         
         ruby = new Label()
         {
@@ -68,36 +67,47 @@ public partial class Game : Form
             g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
             tm.Start();
             menu.InitializeMenu();
-            floorDecorationItems = floorDecoration.GetFloorDecorations();
+            floorDecorations = FloorDecoration.GetFloorDecorations();
         };
 
         pb.Paint += (o, e) =>
         {
-            player.Draw(e.Graphics, player.X, player.Y, player.Z, player.Width, player.Height, player.Depth, Color.Yellow);
-            player.Draw(e.Graphics, 100, -2500, 0, 70, 70, 140, Color.Yellow);
-            player.Move();
-
             menu.Draw(e.Graphics);
             if (menu.IsInventoryOpen) menu.OpenInventory(e.Graphics);
             if (menu.IsShopOpen) menu.OpenShop(e.Graphics);
             if (menu.IsCreatorOpen) menu.OpenCreator(e.Graphics);
             if (menu.IsOracleOpen) menu.OpenOracle(e.Graphics);
 
-            floorDecoration.Draw(e.Graphics, floorDecorationItems[index]);
-            // floorDecoration.DrawRec(e.Graphics, floorDecorationItems[index]);
+            foreach (var deco in floorDecorations)
+            {
+                deco.Draw(e.Graphics);
+                // deco.DrawRec(e.Graphics);
+
+            }
+
+            player.Draw(e.Graphics, player.X, player.Y, player.Z, player.Width, player.Height, player.Depth, Color.Yellow);
+            player.Draw(e.Graphics, 100, -2500, 0, 70, 70, 140, Color.Yellow);
+            player.Move();
         };
 
         pb.MouseDown += (o, e) =>
         {
-            player.StartMove(room.NormalSelection);
-
-            if (menu.IsActive)
+            bool clicked = false;
+            bool isMoving = false;
+            foreach (var deco in floorDecorations)
             {
-                menu.SelectItem(e.Location);
+                deco.OnFloorDecorationClick(e.Location);
+                if (deco.Clicked)
+                    clicked = true;
+                if (deco.MoveOn)
+                    isMoving = true;
             }
 
-            floorDecoration.OnFloorDecorationClick(e.Location);
-
+            if (!clicked && !isMoving)
+                player.StartMove(room.NormalSelection);
+                
+            if (menu.IsActive)
+                menu.SelectItem(e.Location);
         };
 
         pb.MouseMove += (o, e) =>
@@ -116,6 +126,9 @@ public partial class Game : Form
                 menu.Toggle();
             if (!isMouseOverTrigger && menu.IsActive)
                 menu.Toggle();
+
+            foreach (var deco in floorDecorations)
+                deco.Move(e.Location);
         };
 
         Controls.Add(ruby);

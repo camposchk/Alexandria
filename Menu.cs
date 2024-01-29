@@ -6,8 +6,7 @@ using System.Windows.Forms;
 
 public class Menu
 {
-    public FloorDecoration FloorDecorations { get; set; }
-    public FloorDecoration[] FloorDecorationsItens { get; set; }
+    public FloorDecoration[] FloorDecorations { get; set; }
     public bool IsInventoryOpen { get; private set; } = false;
     public bool IsShopOpen { get; private set; } = false;
     public bool IsCreatorOpen { get; private set; } = false;
@@ -45,8 +44,7 @@ public class Menu
         items[2] = new(menu.Left + 50, items[1].Bottom + 100, 100, 100);
         items[3] = new(menu.Left + 50, items[2].Bottom + 100, 100, 100);
 
-        FloorDecorations = new FloorDecoration();
-        FloorDecorationsItens = FloorDecorations.GetFloorDecorations();
+        FloorDecorations = FloorDecoration.GetFloorDecorations();
     }
 
     public void Toggle()
@@ -121,14 +119,27 @@ public class Menu
         IsOracleOpen = false;
     }
 
+    public void MenuLayout(Graphics g, Pen pen)
+    {
+        g.DrawRectangle(pen, pictureBox.ClientSize.Width / 4, pictureBox.ClientSize.Height / 4, pictureBox.ClientSize.Width / 2, pictureBox.ClientSize.Height / 2);
+        g.DrawRectangle(pen, pictureBox.ClientSize.Width / 4, pictureBox.ClientSize.Height / 4 - 30, 100, 30);
+        g.DrawRectangle(pen, pictureBox.ClientSize.Width / 4 + 100, pictureBox.ClientSize.Height / 4 - 30, 100, 30);
+    }
+
     public void OpenInventory(Graphics g)
     {
-        Rectangle inventoryRect = new Rectangle(100, 100, pictureBox.ClientSize.Width / 2, pictureBox.ClientSize.Height / 2);
-        g.DrawRectangle(Pens.Red, inventoryRect);
+        MenuLayout(g, Pens.Red);
 
-        int margin = 50;
+        Rectangle inventoryRect = new Rectangle(
+            pictureBox.ClientSize.Width / 4, 
+            pictureBox.ClientSize.Height / 4, 
+            pictureBox.ClientSize.Width / 2 - 100, 
+            pictureBox.ClientSize.Height / 2 - 100
+        );
+        
+        int margin = 20;
         int spacingBetweenImages = 10;
-        int maxColumns = 5; 
+        int maxColumns = (inventoryRect.Width - 2 * margin) / (50 + spacingBetweenImages); 
         int imageSize = 50; 
 
         int x = inventoryRect.X + margin;
@@ -136,7 +147,7 @@ public class Menu
 
         int column = 0; 
 
-        foreach (var floorDecoration in FloorDecorationsItens)
+        foreach (var floorDecoration in FloorDecorations)
         {
             foreach(var image in floorDecoration.Items)
             {
@@ -158,16 +169,16 @@ public class Menu
 
     public void OpenShop(Graphics g)
     {
-        g.DrawRectangle(Pens.Green, 100, 100, pictureBox.ClientSize.Width / 2, pictureBox.ClientSize.Height / 2);
+        MenuLayout(g, Pens.Green);
     }
 
     public void OpenCreator(Graphics g)
     {
-        g.DrawRectangle(Pens.Yellow, 100, 100, pictureBox.ClientSize.Width / 2, pictureBox.ClientSize.Height / 2);
+        MenuLayout(g, Pens.Yellow);
     }
 
     public void OpenOracle(Graphics g)
     {
-        g.DrawRectangle(Pens.Blue, 100, 100, pictureBox.ClientSize.Width / 2, pictureBox.ClientSize.Height / 2);
+        MenuLayout(g, Pens.Blue);
     }
 }

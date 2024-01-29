@@ -14,7 +14,6 @@ public static class IsometricHelper
              sqrt2 * sqrt3 / 2 * (sqrt2 / sqrt3 * z - p.Y) - p.X / sqrt2
         );
     }
-
     public static Vector3 Normal(this Vector2 vec, float z)
     {
         const float sqrt2 = 1.41421356237f;
