@@ -121,7 +121,7 @@ public class Menu
 
     public void MenuLayout(Graphics g, Pen pen)
     {
-        g.DrawRectangle(pen, pictureBox.ClientSize.Width / 4, pictureBox.ClientSize.Height / 4, pictureBox.ClientSize.Width / 2, pictureBox.ClientSize.Height / 2);
+        g.FillRectangle(Brushes.Gray, pictureBox.ClientSize.Width / 4, pictureBox.ClientSize.Height / 4, pictureBox.ClientSize.Width / 2, pictureBox.ClientSize.Height / 2);
         g.DrawRectangle(pen, pictureBox.ClientSize.Width / 4, pictureBox.ClientSize.Height / 4 - 30, 100, 30);
         g.DrawRectangle(pen, pictureBox.ClientSize.Width / 4 + 100, pictureBox.ClientSize.Height / 4 - 30, 100, 30);
     }
@@ -158,7 +158,18 @@ public class Menu
                     y += imageSize + spacingBetweenImages;
                 }
 
-                g.DrawImage(image, x, y, imageSize, imageSize);
+                float scaleWidth = (float)imageSize / image.Width;
+                float scaleHeight = (float)imageSize / image.Height;
+
+                float scale = Math.Min(scaleWidth, scaleHeight);
+
+                int newWidth = (int)(image.Width * scale);
+                int newHeight = (int)(image.Height * scale);
+
+                int centerX = x + (imageSize - newWidth) / 2;
+                int centerY = y + (imageSize - newHeight) / 2;
+
+                g.DrawImage(image, new Rectangle(centerX, centerY, newWidth, newHeight));
 
                 x += imageSize + spacingBetweenImages;
 

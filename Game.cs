@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using Habbosch;
 
 public partial class Game : Form
 {
@@ -13,10 +14,12 @@ public partial class Game : Form
     private Menu menu;
 
     private Label ruby;
+    private TextBox speechTextBox;
     // private WallDecoration wallDecoration;
-    private FloorDecoration[] floorDecorations;
-    private int index = 1;
-    
+    private FloorDecoration[] floorDecorations;    
+
+    private bool playerIsInFront = false;
+    private Button speakButton;
 
     public Game()
     {
@@ -55,6 +58,24 @@ public partial class Game : Form
             Location = new Point(1800,100)
         };
 
+        speechTextBox = new TextBox
+        {
+            Width = 600, 
+            Height = 20, 
+            Location = new Point(this.ClientSize.Width / 2 - 300, this.ClientSize.Height - 100), 
+            Anchor = AnchorStyles.Bottom
+        };
+
+        speakButton = new Button
+        {
+            Text = "Falar",
+            Width = 50, 
+            Height = 24, 
+            BackColor = Color.White,
+            Location = new Point(speechTextBox.Right + 10, this.ClientSize.Height - 100),
+            Anchor = AnchorStyles.Bottom
+        };
+
         tm.Tick += (o, e) =>
         {
             pb.Refresh();
@@ -70,30 +91,44 @@ public partial class Game : Form
             floorDecorations = FloorDecoration.GetFloorDecorations();
         };
 
+        TestDecoration deco = new TestDecoration();
         pb.Paint += (o, e) =>
         {
-            menu.Draw(e.Graphics);
             if (menu.IsInventoryOpen) menu.OpenInventory(e.Graphics);
             if (menu.IsShopOpen) menu.OpenShop(e.Graphics);
             if (menu.IsCreatorOpen) menu.OpenCreator(e.Graphics);
             if (menu.IsOracleOpen) menu.OpenOracle(e.Graphics);
 
-            foreach (var deco in floorDecorations)
+            if(playerIsInFront)
             {
-                deco.Draw(e.Graphics);
-                // deco.DrawRec(e.Graphics);
+                foreach (var deco in floorDecorations)
+                    deco.Draw(e.Graphics);
 
+                player.Draw(e.Graphics, player.X, player.Y, player.Z, player.Width, player.Height, player.Depth, Color.Yellow);
+                player.Draw(e.Graphics, 100, -2500, 0, 70, 70, 140, Color.Yellow);
+                player.Move();
             }
 
-            player.Draw(e.Graphics, player.X, player.Y, player.Z, player.Width, player.Height, player.Depth, Color.Yellow);
-            player.Draw(e.Graphics, 100, -2500, 0, 70, 70, 140, Color.Yellow);
-            player.Move();
+            if(!playerIsInFront)
+            {
+                player.Draw(e.Graphics, player.X, player.Y, player.Z, player.Width, player.Height, player.Depth, Color.Yellow);
+                player.Draw(e.Graphics, 100, -2500, 0, 70, 70, 140, Color.Yellow);
+                player.Move();
+
+                foreach (var deco in floorDecorations)
+                    deco.Draw(e.Graphics);
+            }
+
+            menu.Draw(e.Graphics);
+            
+            deco.Draw(e.Graphics);
         };
 
         pb.MouseDown += (o, e) =>
         {
             bool clicked = false;
             bool isMoving = false;
+
             foreach (var deco in floorDecorations)
             {
                 deco.OnFloorDecorationClick(e.Location);
@@ -101,6 +136,8 @@ public partial class Game : Form
                     clicked = true;
                 if (deco.MoveOn)
                     isMoving = true;
+                if (deco.SpinOn)
+                    deco.Spin();
             }
 
             if (!clicked && !isMoving)
@@ -112,6 +149,8 @@ public partial class Game : Form
 
         pb.MouseMove += (o, e) =>
         {
+            deco.X = e.Location.X;
+            deco.Y = e.Location.Y;
             Rectangle screenBounds = Screen.FromControl(pb).Bounds;
             Rectangle triggerBounds;
 
@@ -132,6 +171,8 @@ public partial class Game : Form
         };
 
         Controls.Add(ruby);
+        Controls.Add(speechTextBox);
+        Controls.Add(speakButton);
         Controls.Add(pb);
     }
 }

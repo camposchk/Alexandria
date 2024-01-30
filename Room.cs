@@ -15,6 +15,8 @@ public class Room
     private const int tileHeight = 50;
     private PictureBox pictureBox;
 
+    private FloorTexture[] textures = FloorTexture.GetFloorTextures();
+
     bool IsTaken = true;
   
     private PointF cursor = PointF.Empty;
@@ -137,20 +139,6 @@ public class Room
         }
     }
     
-    private void DrawRhombus(Graphics g, Color color, float x, float y, float width, float height, Color outlineColor = default)
-    {
-        PointF[] points = (x - (width / 2), y - (height / 2), width, height)
-            .Rectangle()
-            .Isometric(20);
-
-        using (SolidBrush brush = new SolidBrush(color))
-        using (Pen pen = new Pen(outlineColor))
-        {
-            g.FillPolygon(brush, points);
-            g.DrawPolygon(pen, points);
-        }
-    }
-
     Brush GetDarkerBrush(Brush originalBrush)
     {
         Color originalColor = ((SolidBrush)originalBrush).Color;

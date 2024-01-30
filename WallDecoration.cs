@@ -40,4 +40,9 @@ public class WallDecoration : IDecoration
     {
         throw new System.NotImplementedException();
     }
+
+    public void Draw(Graphics g)
+    {
+        throw new System.NotImplementedException();
+    }
 }
