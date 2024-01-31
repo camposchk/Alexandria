@@ -57,12 +57,14 @@ public class Menu
         if (IsActive)
         {
             int opacity = 200;  
-            Color color = Color.FromArgb(opacity, Color.DimGray);
+            Color color = Color.FromArgb(opacity, Color.Black);
 
             // Logo = new Bitmap(Logo, new Size(100, 100));
 
             using (SolidBrush brush = new(color))
                 g.FillRectangle(brush, menu);
+
+            g.DrawRectangle(Pens.Gray, menu);
             
             g.FillRectangle(Brushes.Red, items[0]);
             g.FillRectangle(Brushes.Blue, items[1]);
@@ -119,16 +121,24 @@ public class Menu
         IsOracleOpen = false;
     }
 
-    public void MenuLayout(Graphics g, Pen pen)
+    public void MenuLayout(Graphics g, int n)
     {
-        g.FillRectangle(Brushes.Gray, pictureBox.ClientSize.Width / 4, pictureBox.ClientSize.Height / 4, pictureBox.ClientSize.Width / 2, pictureBox.ClientSize.Height / 2);
-        g.DrawRectangle(pen, pictureBox.ClientSize.Width / 4, pictureBox.ClientSize.Height / 4 - 30, 100, 30);
-        g.DrawRectangle(pen, pictureBox.ClientSize.Width / 4 + 100, pictureBox.ClientSize.Height / 4 - 30, 100, 30);
+        Color color = Color.FromArgb(200, 0, 0, 0);
+        SolidBrush brush = new SolidBrush(color);
+
+        g.FillRectangle(brush, pictureBox.ClientSize.Width / 4, pictureBox.ClientSize.Height / 4, pictureBox.ClientSize.Width / 2, pictureBox.ClientSize.Height / 2);
+        g.DrawRectangle(Pens.Gray, pictureBox.ClientSize.Width / 4, pictureBox.ClientSize.Height / 4, pictureBox.ClientSize.Width / 2, pictureBox.ClientSize.Height / 2);
+
+        for(int i = 0; i < n; i++)
+        {
+            g.FillRectangle(brush, pictureBox.ClientSize.Width / 4 + 100 * i, pictureBox.ClientSize.Height / 4 - 30, 100, 30);
+            g.DrawRectangle(Pens.Gray, pictureBox.ClientSize.Width / 4 + 100 * i, pictureBox.ClientSize.Height / 4 - 30, 100, 30);
+        }
     }
 
     public void OpenInventory(Graphics g)
     {
-        MenuLayout(g, Pens.Red);
+        MenuLayout(g, 4);
 
         Rectangle inventoryRect = new Rectangle(
             pictureBox.ClientSize.Width / 4, 
@@ -180,16 +190,16 @@ public class Menu
 
     public void OpenShop(Graphics g)
     {
-        MenuLayout(g, Pens.Green);
+        MenuLayout(g, 2);
     }
 
     public void OpenCreator(Graphics g)
     {
-        MenuLayout(g, Pens.Yellow);
+        MenuLayout(g, 3);
     }
 
     public void OpenOracle(Graphics g)
     {
-        MenuLayout(g, Pens.Blue);
+        MenuLayout(g, 1);
     }
 }

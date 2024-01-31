@@ -86,12 +86,12 @@ public class FloorDecoration : IDecoration
             g.DrawRectangle(Pens.Red, bound);
         }
         
-        Brush brush = Brushes.Azure;
-        foreach (var face in floorDecoration)
-        {
-            g.FillPolygon(brush, face);
-            brush = GetDarkerBrush(brush);
-        }
+        // Brush brush = Brushes.Azure;
+        // foreach (var face in floorDecoration)
+        // {
+        //     g.FillPolygon(brush, face);
+        //     brush = GetDarkerBrush(brush);
+        // }
     }
     Brush GetDarkerBrush(Brush originalBrush)
     {

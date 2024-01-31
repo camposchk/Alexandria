@@ -70,9 +70,9 @@ public partial class Game : Form
         {
             Text = "Falar",
             Width = 50, 
-            Height = 24, 
+            Height = 25, 
             BackColor = Color.White,
-            Location = new Point(speechTextBox.Right + 10, this.ClientSize.Height - 100),
+            Location = new Point(speechTextBox.Right + 10, this.ClientSize.Height - 101),
             Anchor = AnchorStyles.Bottom
         };
 
@@ -121,7 +121,7 @@ public partial class Game : Form
 
             menu.Draw(e.Graphics);
             
-            deco.Draw(e.Graphics);
+            // deco.Draw(e.Graphics);
         };
 
         pb.MouseDown += (o, e) =>
