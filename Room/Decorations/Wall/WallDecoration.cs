@@ -41,7 +41,7 @@ public class WallDecoration : IDecoration
         throw new System.NotImplementedException();
     }
 
-    public void Draw(Graphics g)
+    public void Draw(Graphics g, float x, float y)
     {
         throw new System.NotImplementedException();
     }

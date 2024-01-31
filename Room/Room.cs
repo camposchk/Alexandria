@@ -6,7 +6,11 @@ using Microsoft.VisualBasic;
 
 public class Room
 {
+    public Point IndexSelection { get; private set; }
     public PointF NormalSelection { get; private set; }
+    public IDecoration[,] Decorations { get; private set; }
+
+    public TestPlayer[,] Player { get; private set; }
     public float RoomWidth { get; private set; } = 750;
     public float RoomHeight { get; private set; } = 750;
     public float RoomDepth { get; private set; } = 20;
@@ -14,41 +18,88 @@ public class Room
     private const int tileWidth = 50;
     private const int tileHeight = 50;
     private PictureBox pictureBox;
-
     private FloorTexture[] textures = FloorTexture.GetFloorTextures();
-
-    bool IsTaken = true;
-  
+    bool IsTaken = false;
     private PointF cursor = PointF.Empty;
+  
     public Room(PictureBox pictureBox)
     {
         this.pictureBox = pictureBox;
 
         InitializeRoom();
-        InitializePictureBox();
+    }
+
+    public void Draw(Graphics g)
+    {
+        drawWalls(g);
+        drawFloor(g);
+
+        drawDecorations(g);
+        drawPlayer(g);
     }
 
     private void InitializeRoom()
     {
-        pictureBox.MouseMove += (o, e) =>
+        pictureBox.MouseMove += (o, e) => cursor = e.Location;
+        int rows = (int)(RoomHeight / tileHeight);
+        int cols = (int)(RoomWidth / tileWidth);
+        Decorations = new IDecoration[rows, cols];
+        Player = new TestPlayer[rows, cols];
+    }
+    
+    private void drawDecorations(Graphics g)
+    {
+        int rows = (int)(RoomHeight / tileHeight);
+        int cols = (int)(RoomWidth / tileWidth);
+
+        var center = new PointF(
+            pictureBox.ClientSize.Width / 2,
+            pictureBox.ClientSize.Height / 2
+        ).Normal();
+
+        for (int i = rows - 1; i >= 0; i--)
         {
-            cursor = e.Location;
-        };
+            for (int j = cols - 1; j >= 0; j--)
+            {
+                var deco = Decorations[i, j];
+                if (deco is null)
+                    continue;
+                
+                float x = center.X - RoomWidth / 2 + j * tileWidth;
+                float y = center.Y - RoomHeight / 2 + i * tileHeight;
+                var screenPoint = new PointF(x, y).Isometric();
+                deco.Draw(g, screenPoint.X, screenPoint.Y);
+            }
+        }
     }
 
-    private void InitializePictureBox()
+    private void drawPlayer(Graphics g)
     {
-        pictureBox.Paint += Room_Paint;
-        pictureBox.Invalidate();
+        int rows = (int)(RoomHeight / tileHeight);
+        int cols = (int)(RoomWidth / tileWidth);
+
+        var center = new PointF(
+            pictureBox.ClientSize.Width / 2,
+            pictureBox.ClientSize.Height / 2
+        ).Normal();
+
+        for (int i = rows - 1; i >= 0; i--)
+        {
+            for (int j = cols - 1; j >= 0; j--)
+            {
+                TestPlayer player = Player[i, j];
+                if (player is null)
+                    continue;
+                
+                float x = center.X - RoomWidth / 2 + j * tileWidth;
+                float y = center.Y - RoomHeight / 2 + i * tileHeight;
+                var screenPoint = new PointF(x, y).Isometric(); 
+                player.Draw(g, screenPoint.X, screenPoint.Y);
+            }
+        }
     }
 
-    private void Room_Paint(object sender, PaintEventArgs e)
-    {
-        DrawWalls(e.Graphics);
-        DrawFloor(e.Graphics);
-    }
-
-    public void DrawFloor(Graphics g)
+    private void drawFloor(Graphics g)
     {        
         Color tileColor = Color.Pink;
         var center = new PointF(
@@ -78,12 +129,12 @@ public class Room
 
                 if (new RectangleF(x, y, tileWidth, tileHeight).Contains(ncursor))
                 {
-                    if (!IsTaken)
+                    if (IsTaken)
                     {
                         drawParallelepiped(g, 
                             x, y, RoomDepth + 2, 
                             tileWidth, tileHeight, 2,
-                            GetDarkerColor(Color.Red)
+                            getDarkerColor(Color.Red)
                         );
                     }
                     else
@@ -91,17 +142,18 @@ public class Room
                         drawParallelepiped(g, 
                             x, y, RoomDepth + 2, 
                             tileWidth, tileHeight, 2,
-                            GetDarkerColor(tileColor)
+                            getDarkerColor(tileColor)
                         );
                     }
+
+                    this.IndexSelection = new Point(i, j);
                     this.NormalSelection = new PointF(x, y);
                 }
             }
         }
     }
 
-
-    public void DrawWalls(Graphics g)
+    private void drawWalls(Graphics g)
     {        
         var center = new PointF(
             pictureBox.ClientSize.Width / 2,
@@ -135,11 +187,11 @@ public class Room
         foreach (var face in chao)
         {
             g.FillPolygon(brush, face);
-            brush = GetDarkerBrush(brush);
+            brush = getDarkerBrush(brush);
         }
     }
     
-    Brush GetDarkerBrush(Brush originalBrush)
+    private Brush getDarkerBrush(Brush originalBrush)
     {
         Color originalColor = ((SolidBrush)originalBrush).Color;
 
@@ -154,7 +206,7 @@ public class Room
         return new SolidBrush(darkerColor);
     }
 
-    private Color GetDarkerColor(Color originalColor)
+    private Color getDarkerColor(Color originalColor)
     {
         float factor = 0.8f;
 

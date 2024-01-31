@@ -51,15 +51,15 @@ public class FloorDecoration : IDecoration
     {
         return new FloorDecoration[]
         {
-            new(300, -900, 100, 100, 75, 2, "./Images/couch.png"),
-            new(400, -900, 50, 50, 150, 2, "./Images/lamp.png"),
-            new(500, -900, 100, 100, 100, 2, "./Images/table.png"),
-            new(600, -900, 50, 125, 150, 2, "./Images/closet.png"),
-            new(700, -900, 100, 50, 100, 2, "./Images/chair.png"),
+            new(300, -900, 100, 100, 75, 2, "./Images/Decos/Floor/couch.png"),
+            new(400, -900, 50, 50, 150, 2, "./Images/Decos/Floor/lamp.png"),
+            new(500, -900, 100, 100, 100, 2, "./Images/Decos/Floor/table.png"),
+            new(600, -900, 50, 125, 150, 2, "./Images/Decos/Floor/closet.png"),
+            new(700, -900, 100, 50, 100, 2, "./Images/Decos/Floor/chair.png"),
         };
     }
 
-    public void Draw(Graphics g)
+    public void Draw(Graphics g, float x, float y)
     {
         foreach (var bound in Bounds)
         {

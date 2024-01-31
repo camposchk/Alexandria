@@ -24,7 +24,7 @@ public class FloorTexture
     {
         return new FloorTexture[]
         {
-            new(300, -900, 50, 50, "./Images/wood.jpg")
+            new(300, -900, 50, 50, "./Images/Decos/Floor/Textures/wood.jpg")
         };
     }
 }

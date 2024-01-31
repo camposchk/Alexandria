@@ -1,52 +1,23 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Drawing;
-using System.Linq;
 using System.Numerics;
-using System.Threading.Tasks;
 
-namespace Habbosch;
-public class TestDecoration : IDecoration
+public class TestPlayer 
 {
+    private float moveSpeed = 10.0f; // Speed of movement
     public Vector3 Root { get; set; }
+
     List<(PointF[], Brush)> faces = new();
-    public TestDecoration()
+
+    public TestPlayer()
     {
         Root = new Vector3(0f, 0f, 20f);
         add(
-            (0f, 0f, -20f, 7.5f, 7.5f, 40f)
+            (0f, 0f, -80f, 50f, 50f, 100f)
             .Parallelepiped()
             .Isometric(), 
-            Brushes.Brown
-        );
-
-        add(
-            (42.5f, 0f, -20f, 7.5f, 7.5f, 40f)
-            .Parallelepiped()
-            .Isometric(), 
-            Brushes.Brown
-        );
-
-        add(
-            (0f, 42.5f, -20f, 7.5f, 7.5f, 40f)
-            .Parallelepiped()
-            .Isometric(), 
-            Brushes.Brown
-        );
-
-        add(
-            (42.5f, 42.5f, -20f, 7.5f, 7.5f, 40f)
-            .Parallelepiped()
-            .Isometric(), 
-            Brushes.Brown
-        );
-        
-        add(
-            (0f, 0f, -40f, 50f, 50f, 20f)
-            .Parallelepiped()
-            .Isometric(), 
-            Brushes.DarkOrange
+            Brushes.Yellow
         );
     }
 
@@ -58,6 +29,7 @@ public class TestDecoration : IDecoration
             baseBrush = getDarkerBrush(baseBrush);
         }
     }
+
     Brush getDarkerBrush(Brush originalBrush)
     {
         Color originalColor = ((SolidBrush)originalBrush).Color;
@@ -72,7 +44,7 @@ public class TestDecoration : IDecoration
 
         return new SolidBrush(darkerColor);
     }
-    
+
     public void Draw(Graphics g, float x, float y)
     {
         var basePt = PointF.Empty.Isometric();
@@ -84,18 +56,27 @@ public class TestDecoration : IDecoration
         g.ResetTransform();
     }
 
-    public void Move(Point mouseLocation)
-    {
-        throw new NotImplementedException();
-    }
+    // public void StartMove(this (int i, int j) tuple)
+    // {
+    //     (i, j) = tuple;
+    //     target = new Point(i, j);
+    // }
 
-    public void Spin()
-    {
-        throw new NotImplementedException();
-    }
+    // public void Move()
+    // {
+    //     // Calculate the vector from the current position to the target
+    //     Vector3 direction = target - Root;
+    //     float distance = direction.Length();
 
-    public void Store()
-    {
-        throw new NotImplementedException();
-    }
+    //     // Normalize the direction vector, and then move towards the target
+    //     if (distance < moveSpeed)
+    //     {
+    //         Root = target; // If close enough to the target, just set the position to the target
+    //     }
+    //     else
+    //     {
+    //         direction = Vector3.Normalize(direction);
+    //         Root += direction * moveSpeed; // Move towards the target
+    //     }
+    // }
 }
