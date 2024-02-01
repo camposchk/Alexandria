@@ -42,7 +42,6 @@ public partial class Game : Form
             Interval = 10
         };
 
-
         player = new Player();
         player.AddOutfit(new HatOutfit());
         player.AddOutfit(new ShirtOutfit());
@@ -78,6 +77,39 @@ public partial class Game : Form
 
         tm.Tick += (o, e) =>
         {
+            g.Clear(Color.Black);
+
+            room.Draw(g);
+
+            if (menu.IsInventoryOpen) menu.OpenInventory(g);
+            if (menu.IsShopOpen) menu.OpenShop(g);
+            if (menu.IsCreatorOpen) menu.OpenCreator(g);
+            if (menu.IsOracleOpen) menu.OpenOracle(g);
+
+            if(playerIsInFront)
+            {
+                foreach (var deco in floorDecorations)
+                    deco.Draw(g);
+
+                player.Draw(g, player.X, player.Y, player.Z, player.Width, player.Height, player.Depth, Color.Yellow);
+                player.Draw(g, 100, -2500, 0, 70, 70, 140, Color.Yellow);
+                player.Move();
+
+            }
+
+            if(!playerIsInFront)
+            {
+                player.Draw(g, player.X, player.Y, player.Z, player.Width, player.Height, player.Depth, Color.Yellow);
+                player.Draw(g, 100, -2500, 0, 70, 70, 140, Color.Yellow);
+                player.Move();
+
+                foreach (var deco in floorDecorations)
+                    deco.Draw(g);
+            }
+
+            menu.Draw(g);
+
+            // g.DrawString($"{deco.X}, {deco.Y}", SystemFonts.MenuFont, Brushes.White, PointF.Empty);
             pb.Refresh();
         };
 
@@ -86,42 +118,10 @@ public partial class Game : Form
             Bitmap bitmap = new(pb.Width, pb.Height);
             g = Graphics.FromImage(bitmap);
             g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            this.pb.Image = bitmap;
             tm.Start();
             menu.InitializeMenu();
             floorDecorations = FloorDecoration.GetFloorDecorations();
-        };
-
-        TestDecoration deco = new TestDecoration();
-        pb.Paint += (o, e) =>
-        {
-            if (menu.IsInventoryOpen) menu.OpenInventory(e.Graphics);
-            if (menu.IsShopOpen) menu.OpenShop(e.Graphics);
-            if (menu.IsCreatorOpen) menu.OpenCreator(e.Graphics);
-            if (menu.IsOracleOpen) menu.OpenOracle(e.Graphics);
-
-            if(playerIsInFront)
-            {
-                foreach (var deco in floorDecorations)
-                    deco.Draw(e.Graphics);
-
-                player.Draw(e.Graphics, player.X, player.Y, player.Z, player.Width, player.Height, player.Depth, Color.Yellow);
-                player.Draw(e.Graphics, 100, -2500, 0, 70, 70, 140, Color.Yellow);
-                player.Move();
-            }
-
-            if(!playerIsInFront)
-            {
-                player.Draw(e.Graphics, player.X, player.Y, player.Z, player.Width, player.Height, player.Depth, Color.Yellow);
-                player.Draw(e.Graphics, 100, -2500, 0, 70, 70, 140, Color.Yellow);
-                player.Move();
-
-                foreach (var deco in floorDecorations)
-                    deco.Draw(e.Graphics);
-            }
-
-            menu.Draw(e.Graphics);
-            
-            // deco.Draw(e.Graphics);
         };
 
         pb.MouseDown += (o, e) =>
@@ -143,14 +143,11 @@ public partial class Game : Form
             if (!clicked && !isMoving)
                 player.StartMove(room.NormalSelection);
                 
-            if (menu.IsActive)
-                menu.SelectItem(e.Location);
+            menu.SelectItem(e.Location);
         };
 
         pb.MouseMove += (o, e) =>
         {
-            deco.X = e.Location.X;
-            deco.Y = e.Location.Y;
             Rectangle screenBounds = Screen.FromControl(pb).Bounds;
             Rectangle triggerBounds;
 

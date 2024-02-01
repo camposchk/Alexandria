@@ -6,46 +6,39 @@ using Microsoft.VisualBasic;
 
 public class Room
 {
+    public PointF IndexSelection { get; private set; }
     public PointF NormalSelection { get; private set; }
     public float RoomWidth { get; private set; } = 750;
     public float RoomHeight { get; private set; } = 750;
     public float RoomDepth { get; private set; } = 20;
-    
     private const int tileWidth = 50;
     private const int tileHeight = 50;
     private PictureBox pictureBox;
 
     private FloorTexture[] textures = FloorTexture.GetFloorTextures();
-
     bool IsTaken = true;
-  
     private PointF cursor = PointF.Empty;
+
     public Room(PictureBox pictureBox)
     {
         this.pictureBox = pictureBox;
 
         InitializeRoom();
-        InitializePictureBox();
     }
 
     private void InitializeRoom()
     {
-        pictureBox.MouseMove += (o, e) =>
-        {
-            cursor = e.Location;
-        };
+        pictureBox.MouseMove += (o, e) => cursor = e.Location;
+
+        int rows = (int)(RoomHeight / tileHeight);
+        int cols = (int)(RoomWidth / tileWidth);
+        
     }
 
-    private void InitializePictureBox()
+    public void Draw(Graphics g)
     {
-        pictureBox.Paint += Room_Paint;
-        pictureBox.Invalidate();
-    }
-
-    private void Room_Paint(object sender, PaintEventArgs e)
-    {
-        DrawWalls(e.Graphics);
-        DrawFloor(e.Graphics);
+        DrawWalls(g);
+        DrawFloor(g);
     }
 
     public void DrawFloor(Graphics g)
@@ -95,6 +88,7 @@ public class Room
                         );
                     }
                     this.NormalSelection = new PointF(x, y);
+                    this.IndexSelection = new Point(i, j);
                 }
             }
         }

@@ -26,7 +26,10 @@ public class Menu
 
     private Rectangle[] items = new Rectangle[4];
 
-    public Image Logo { get; set; } = Image.FromFile("./Images/muse.png");
+    // public Image Logo { get; set; } = Image.FromFile("./Images/muse.png");
+
+    private Rectangle rec;
+    private Rectangle close;
 
     public Menu(PictureBox pictureBox)
     {
@@ -45,6 +48,15 @@ public class Menu
         items[3] = new(menu.Left + 50, items[2].Bottom + 100, 100, 100);
 
         FloorDecorations = FloorDecoration.GetFloorDecorations();
+
+        this.rec = new Rectangle(
+            pictureBox.ClientSize.Width / 4, 
+            pictureBox.ClientSize.Height / 4, 
+            pictureBox.ClientSize.Width / 2, 
+            pictureBox.ClientSize.Height / 2
+        );
+
+        this.close = new Rectangle(rec.Right - 30, rec.Y - 30, 30, 30);
     }
 
     public void Toggle()
@@ -90,6 +102,9 @@ public class Menu
                 }
             }
         }
+
+        if (close.Contains(mouseLocation))
+            CloseAllMenus();
     }
 
     protected virtual void OnItemClick(int index)
@@ -126,13 +141,16 @@ public class Menu
         Color color = Color.FromArgb(200, 0, 0, 0);
         SolidBrush brush = new SolidBrush(color);
 
-        g.FillRectangle(brush, pictureBox.ClientSize.Width / 4, pictureBox.ClientSize.Height / 4, pictureBox.ClientSize.Width / 2, pictureBox.ClientSize.Height / 2);
-        g.DrawRectangle(Pens.Gray, pictureBox.ClientSize.Width / 4, pictureBox.ClientSize.Height / 4, pictureBox.ClientSize.Width / 2, pictureBox.ClientSize.Height / 2);
-
+        g.FillRectangle(brush, rec);
+        g.DrawRectangle(Pens.Gray, rec);
+        
+        g.FillRectangle(new SolidBrush(Color.FromArgb(200, Color.DarkRed)), close);
+        g.DrawRectangle(Pens.Gray, close);
+            
         for(int i = 0; i < n; i++)
         {
-            g.FillRectangle(brush, pictureBox.ClientSize.Width / 4 + 100 * i, pictureBox.ClientSize.Height / 4 - 30, 100, 30);
-            g.DrawRectangle(Pens.Gray, pictureBox.ClientSize.Width / 4 + 100 * i, pictureBox.ClientSize.Height / 4 - 30, 100, 30);
+            g.FillRectangle(brush, rec.X + 100 * i, rec.Y - 30, 100, 30);
+            g.DrawRectangle(Pens.Gray, rec.X + 100 * i, rec.Y - 30, 100, 30);
         }
     }
 
