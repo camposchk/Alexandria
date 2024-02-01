@@ -10,6 +10,11 @@ public class TestDecoration : IDecoration
 {
     public int X { get; set; }
     public int Y { get; set; }
+
+    public float Cost => throw new NotImplementedException();
+
+    public List<Image> Items => throw new NotImplementedException();
+
     List<(PointF[], Brush)> faces = new();
     public TestDecoration()
     {

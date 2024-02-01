@@ -7,6 +7,7 @@ using System.Windows.Forms;
 public class Menu
 {
     public FloorDecoration[] FloorDecorations { get; set; }
+    public Player player { get; set; }
     public bool IsInventoryOpen { get; private set; } = false;
     public bool IsShopOpen { get; private set; } = false;
     public bool IsCreatorOpen { get; private set; } = false;
@@ -48,6 +49,7 @@ public class Menu
         items[3] = new(menu.Left + 50, items[2].Bottom + 100, 100, 100);
 
         FloorDecorations = FloorDecoration.GetFloorDecorations();
+        player = new Player();
 
         this.rec = new Rectangle(
             pictureBox.ClientSize.Width / 4, 
@@ -114,16 +116,16 @@ public class Menu
         switch (index)
         {
             case 0:
-                IsInventoryOpen = true;
+                IsInventoryOpen = !IsInventoryOpen;
                 break;
             case 1:
-                IsShopOpen = true;
+                IsShopOpen = !IsShopOpen;
                 break;
             case 2:
-                IsCreatorOpen = true;
+                IsCreatorOpen = !IsCreatorOpen;
                 break;
             case 3:
-                IsOracleOpen = true;
+                IsOracleOpen = !IsOracleOpen;
                 break;
         }
     }
@@ -175,7 +177,7 @@ public class Menu
 
         int column = 0; 
 
-        foreach (var floorDecoration in FloorDecorations)
+        foreach (var floorDecoration in player.purchasedDecorations)
         {
             foreach(var image in floorDecoration.Items)
             {
@@ -208,7 +210,55 @@ public class Menu
 
     public void OpenShop(Graphics g)
     {
-        MenuLayout(g, 2);
+        MenuLayout(g, 4);
+
+        Rectangle inventoryRect = new Rectangle(
+            pictureBox.ClientSize.Width / 4, 
+            pictureBox.ClientSize.Height / 4, 
+            pictureBox.ClientSize.Width / 2 - 100, 
+            pictureBox.ClientSize.Height / 2 - 100
+        );
+        
+        int margin = 20;
+        int spacingBetweenImages = 10;
+        int maxColumns = (inventoryRect.Width - 2 * margin) / (50 + spacingBetweenImages); 
+        int imageSize = 50; // Tamanho do retângulo de borda
+
+        int x = inventoryRect.X + margin;
+        int y = inventoryRect.Y + margin;
+
+        int column = 0; 
+
+        foreach (var floorDecoration in FloorDecorations)
+        {
+            foreach(var image in floorDecoration.Items)
+            {
+                if (column >= maxColumns)
+                {
+                    column = 0;
+                    x = inventoryRect.X + margin;
+                    y += imageSize + spacingBetweenImages;
+                }
+
+                float scaleWidth = (float)imageSize / image.Width;
+                float scaleHeight = (float)imageSize / image.Height;
+
+                float scale = Math.Min(scaleWidth, scaleHeight);
+
+                int newWidth = (int)(image.Width * scale);
+                int newHeight = (int)(image.Height * scale);
+
+                int centerX = x + (imageSize - newWidth) / 2;
+                int centerY = y + (imageSize - newHeight) / 2;
+
+                g.DrawImage(image, new Rectangle(centerX, centerY, newWidth, newHeight));
+                g.DrawRectangle(Pens.Gray, new Rectangle(x, y, imageSize, imageSize)); 
+
+                x += imageSize + spacingBetweenImages;
+
+                column++;
+            }
+        }
     }
 
     public void OpenCreator(Graphics g)

@@ -3,6 +3,7 @@ using System.Drawing;
 
 public class WallDecoration : IDecoration
 {
+    public float Cost { get; private set; }
     public float X { get; set; }
     public float Y { get; set; }
     public float Z { get; set; }
