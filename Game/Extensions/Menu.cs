@@ -6,13 +6,13 @@ using System.Windows.Forms;
 
 public class Menu
 {
+    private PictureBox pictureBox;
     public FloorDecoration[] FloorDecorations { get; set; }
     public Player player { get; set; }
     public bool IsInventoryOpen { get; private set; } = false;
     public bool IsShopOpen { get; private set; } = false;
     public bool IsCreatorOpen { get; private set; } = false;
     public bool IsOracleOpen { get; private set; } = false;
-    private PictureBox pictureBox;
     public bool IsActive;
 
     public int Height { get; private set; }
@@ -24,13 +24,17 @@ public class Menu
     public Label Oraculo = new();
 
     private Rectangle menu { get; set; }
-
+    private List<RectangleF> shopItems { get; set; } = new();
     private Rectangle[] items = new Rectangle[4];
-
-    // public Image Logo { get; set; } = Image.FromFile("./Images/muse.png");
-
     private Rectangle rec;
     private Rectangle close;
+    private Image ruby = Image.FromFile("./Images/coin2.png");
+    private Image chest1 = Image.FromFile("./Images/chest1.png");
+    private Image chest2 = Image.FromFile("./Images/chest2.png");
+    private Image shop1 = Image.FromFile("./Images/shop1.png");
+    private Image shop2 = Image.FromFile("./Images/shop2.png");
+    private Image ball1 = Image.FromFile("./Images/ball1.png");
+    private Image ball2 = Image.FromFile("./Images/ball2.png");
 
     public Menu(PictureBox pictureBox)
     {
@@ -79,11 +83,26 @@ public class Menu
                 g.FillRectangle(brush, menu);
 
             g.DrawRectangle(Pens.Gray, menu);
+
+            g.DrawString($"{player.Ruby}", new Font("Arial", 12), Brushes.DarkRed, menu.X + 20, menu.Y + 10);
+            g.DrawImage(ruby, new Rectangle(menu.X + 40, menu.Y, 50, 50));
             
-            g.FillRectangle(Brushes.Red, items[0]);
-            g.FillRectangle(Brushes.Blue, items[1]);
+            if (!IsInventoryOpen)
+                g.DrawImage(chest1, items[0]);
+            else 
+                g.DrawImage(chest2, items[0]);
+
+            if (!IsShopOpen)
+                g.DrawImage(shop1, items[1]);
+            else
+                g.DrawImage(shop2, items[1]);
+
             g.FillRectangle(Brushes.Yellow, items[2]);
-            g.FillRectangle(Brushes.Green, items[3]);
+
+            if(!IsOracleOpen)
+                g.DrawImage(ball1, items[3]);
+            else
+                g.DrawImage(ball2, items[3]);
 
             // g.DrawString(Shop.ToString(), new Font("Mexcellent3D-Regular", 18, FontStyle.Regular), Brushes.Red, new PointF(100, 100));
 
@@ -107,6 +126,16 @@ public class Menu
 
         if (close.Contains(mouseLocation))
             CloseAllMenus();
+
+
+        for (int i = 0; i < shopItems.Count; i++)
+        {
+            if (shopItems[i].Contains(mouseLocation))
+            {
+                player.Buy(FloorDecorations[i]);
+                break;
+            }
+        }
     }
 
     protected virtual void OnItemClick(int index)
@@ -222,7 +251,7 @@ public class Menu
         int margin = 20;
         int spacingBetweenImages = 10;
         int maxColumns = (inventoryRect.Width - 2 * margin) / (50 + spacingBetweenImages); 
-        int imageSize = 50; // Tamanho do retângulo de borda
+        int imageSize = 50; 
 
         int x = inventoryRect.X + margin;
         int y = inventoryRect.Y + margin;
@@ -253,6 +282,8 @@ public class Menu
 
                 g.DrawImage(image, new Rectangle(centerX, centerY, newWidth, newHeight));
                 g.DrawRectangle(Pens.Gray, new Rectangle(x, y, imageSize, imageSize)); 
+
+                shopItems.Add(new RectangleF(x, y, imageSize, imageSize));
 
                 x += imageSize + spacingBetweenImages;
 

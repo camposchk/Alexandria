@@ -110,7 +110,7 @@ public partial class Game : Form
             if (menu.IsCreatorOpen) menu.OpenCreator(g);
             if (menu.IsOracleOpen) menu.OpenOracle(g);
 
-            g.DrawString($"{room.NormalSelection.X}, {room.NormalSelection.Y}", SystemFonts.MenuFont, Brushes.White, PointF.Empty);
+            g.DrawString($"{room.IndexSelection.X}, {room.IndexSelection.Y}", SystemFonts.MenuFont, Brushes.White, PointF.Empty);
             pb.Refresh();
         };
 
@@ -168,7 +168,6 @@ public partial class Game : Form
                 deco.Move(e.Location);
         };
 
-        Controls.Add(ruby);
         Controls.Add(speechTextBox);
         Controls.Add(speakButton);
         Controls.Add(pb);
