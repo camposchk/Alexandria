@@ -33,6 +33,10 @@ public class FloorDecoration : IDecoration
     public RectangleF MenuFloorSpin { get; private set; }
     public RectangleF MenuFloorStore { get; private set; }
 
+    public Room Room => throw new NotImplementedException();
+
+    Room IDecoration.Room { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
     public FloorDecoration(float x, float y, float width, float height, float depth, int tilesize, string imgPath)
     {
         this.X = x;
@@ -122,7 +126,7 @@ public class FloorDecoration : IDecoration
         }
     }
 
-    public void Move(Point mouseLocation)
+    public void TryMove(Point mouseLocation)
     {
         if (!MoveOn)
         {

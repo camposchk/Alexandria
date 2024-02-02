@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Numerics;
 using System.Text;
 using System.Windows.Forms;
-using Habbosch;
 
 public partial class Game : Form
 {
@@ -53,6 +52,9 @@ public partial class Game : Form
 
         room.Player[0, 0] = new TestPlayer();
         room.Player[3, 0] = new TestPlayer();
+
+        room.Set(new TestDecoration(), 5, 5);
+        room.Set(new TestDecoration(), 8, 8);
                 
         menu = new Menu(pb);
         
@@ -82,7 +84,6 @@ public partial class Game : Form
             Anchor = AnchorStyles.Bottom
         };
 
-        TestDecoration deco = new TestDecoration();
         tm.Tick += (o, e) =>
         {
             g.Clear(Color.Black);
@@ -137,6 +138,8 @@ public partial class Game : Form
         {
             bool clicked = false;
             bool isMoving = false;
+            
+            room.Click(e.Location);
 
             foreach (var deco in floorDecorations)
             {
@@ -164,6 +167,8 @@ public partial class Game : Form
             var pt = room.NormalSelection
                 .Isometric();
             
+            room.Move(e.Location);
+            
             Rectangle screenBounds = Screen.FromControl(pb).Bounds;
             Rectangle triggerBounds;
 
@@ -180,7 +185,7 @@ public partial class Game : Form
                 menu.Toggle();
 
             foreach (var deco in floorDecorations)
-                deco.Move(e.Location);
+                deco.TryMove(e.Location);
         };
 
         Controls.Add(ruby);

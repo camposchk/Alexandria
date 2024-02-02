@@ -29,6 +29,41 @@ public class Room
         InitializeRoom();
     }
 
+    public void Click(PointF cursor)
+    {
+        foreach (var value in Decorations)
+        {
+            value?.Click(cursor);
+        }
+    }
+
+    public void Move(Point cursor)
+    {
+        foreach (var value in Decorations)
+        {
+            value?.TryMove(cursor);
+        }
+    }
+
+    public void Set(IDecoration decoration, int x, int y)
+    {
+        this.Decorations[x, y] = decoration;
+        decoration.Room = this;
+    }
+
+    public void Remove(int x, int y)
+    {
+        this.Decorations[x, y] = null;
+    }
+
+    public void Remove(IDecoration decoration)
+    {
+        for (int x = 0; x < RoomWidth / tileWidth; x++)
+            for (int y = 0; y < RoomHeight / tileHeight; y++)
+                if (this.Decorations[x, y] == decoration)
+                    this.Decorations[x, y] = null;
+    }
+
     public void Draw(Graphics g)
     {
         drawWalls(g);

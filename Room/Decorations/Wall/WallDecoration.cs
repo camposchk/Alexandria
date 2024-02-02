@@ -12,6 +12,7 @@ public class WallDecoration : IDecoration
 
     public int TileSize { get; set; }
     public List<Image> Items { get; set; }
+    public Room Room { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
     public WallDecoration(float x, float y, float z, float width, float height, float depth, int tilesize, string imgPath)
     {
@@ -26,7 +27,7 @@ public class WallDecoration : IDecoration
         this.Items = new(){Bitmap.FromFile(imgPath)};
     }
 
-    public void Move(Point mouseLocation)
+    public void TryMove(Point mouseLocation)
     {
         throw new System.NotImplementedException();
     }

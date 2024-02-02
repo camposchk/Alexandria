@@ -3,8 +3,10 @@ using System.Drawing;
 
 public interface IDecoration
 {
+    Room Room { get; set; }
     void Draw(Graphics g, float x, float y);
-    void Move(Point mouseLocation);
+    void Click(PointF cursor) { }
+    void TryMove(Point mouseLocation);
 
     void Spin();
 
