@@ -5,7 +5,6 @@ using System.Numerics;
 
 public class TestPlayer 
 {
-    private float moveSpeed = 10.0f; // Speed of movement
     public Vector3 Root { get; set; }
 
     List<(PointF[], Brush)> faces = new();

@@ -42,7 +42,7 @@ public class Player
 
         if (IsSpeaking)
         {
-            g.DrawRectangle(Pens.Red, 100,100, 100, 100);
+            g.DrawRectangle(Pens.Red, 100, 100, 100, 100);
         }
     }
 

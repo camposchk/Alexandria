@@ -1,11 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Windows.Forms;
-using Microsoft.VisualBasic;
 
 public class FloorDecoration : IDecoration
 {
@@ -99,20 +95,20 @@ public class FloorDecoration : IDecoration
         //     brush = GetDarkerBrush(brush);
         // }
     }
-    Brush GetDarkerBrush(Brush originalBrush)
-    {
-        Color originalColor = ((SolidBrush)originalBrush).Color;
+    // Brush GetDarkerBrush(Brush originalBrush)
+    // {
+    //     Color originalColor = ((SolidBrush)originalBrush).Color;
 
-        float factor = 0.9f;
+    //     float factor = 0.9f;
 
-        int red = (int)(originalColor.R * factor);
-        int green = (int)(originalColor.G * factor);
-        int blue = (int)(originalColor.B * factor);
+    //     int red = (int)(originalColor.R * factor);
+    //     int green = (int)(originalColor.G * factor);
+    //     int blue = (int)(originalColor.B * factor);
 
-        Color darkerColor = Color.FromArgb(red, green, blue);
+    //     Color darkerColor = Color.FromArgb(red, green, blue);
 
-        return new SolidBrush(darkerColor);
-    }
+    //     return new SolidBrush(darkerColor);
+    // }
     
     public void Spin()
     {

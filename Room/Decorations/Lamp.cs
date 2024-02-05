@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Numerics;
 using System.Collections.Generic;
-public class TestDecoration : IDecoration
+public class Lamp : IDecoration
 {
     public Room Room { get; set; }
     private bool moving = false;
@@ -19,45 +19,32 @@ public class TestDecoration : IDecoration
     public RectangleF MenuFloorMove { get; private set; }
     public RectangleF MenuFloorSpin { get; private set; }
     public RectangleF MenuFloorStore { get; private set; }
-
-    SolidBrush brush = new SolidBrush(Colors.GetRandomColor());
-    public TestDecoration()
+    public Lamp()
     {
         Root = new Vector3(0f, 0f, 20f);
         add(
-            (0f, 0f, -20f, 7.5f, 7.5f, 40f)
+            (25f, 25f, -5f, 50f, 50f, 5f)
             .Parallelepiped()
-            .Isometric(), 
-            brush
+            .Isometric(),
+            Brushes.Gray
         );
 
-        add(
-            (42.5f, 0f, -20f, 7.5f, 7.5f, 40f)
-            .Parallelepiped()
-            .Isometric(), 
-            brush
-        );
 
         add(
-            (0f, 42.5f, -20f, 7.5f, 7.5f, 40f)
+            (28f, 28f, 0f, 4f, 4f, 15f)
             .Parallelepiped()
-            .Isometric(), 
-            brush
+            .Isometric(),
+            Brushes.Silver
         );
 
+
         add(
-            (42.5f, 42.5f, -20f, 7.5f, 7.5f, 40f)
+            (23f, 23f, -15f, 14f, 14f, 10f)
             .Parallelepiped()
-            .Isometric(), 
-            brush
+            .Isometric(),
+            Brushes.LightYellow
         );
-        
-        add(
-            (0f, 0f, -40f, 50f, 50f, 20f)
-            .Parallelepiped()
-            .Isometric(), 
-            new SolidBrush(Colors.GetRandomColor())
-        );
+
     }
 
     private void add(PointF[][] faces, Brush baseBrush)
@@ -95,9 +82,9 @@ public class TestDecoration : IDecoration
 
         if(OpenFloorMenu)
         {
-            MenuFloorMove = new RectangleF(x - 50, y - 100, 100, 30);
-            MenuFloorSpin = new RectangleF(x - 50, MenuFloorMove.Y - 35, 100, 30);
-            MenuFloorStore = new RectangleF(x - 50, MenuFloorSpin.Y - 35, 100, 30);
+            MenuFloorMove = new RectangleF(x, y - 40, 400, 30);
+            MenuFloorSpin = new RectangleF(x, MenuFloorMove.Y - 35, 400, 30);
+            MenuFloorStore = new RectangleF(x, MenuFloorSpin.Y - 35, 400, 30);
 
             g.DrawRectangle(Pens.Red, MenuFloorMove);
             g.DrawRectangle(Pens.Blue, MenuFloorSpin);

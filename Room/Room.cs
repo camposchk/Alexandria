@@ -10,7 +10,7 @@ public class Room
     public PointF NormalSelection { get; private set; }
     public IDecoration[,] Decorations { get; private set; }
 
-    public TestPlayer[,] Player { get; private set; }
+    // public TestPlayer[,] Player { get; private set; }
     public float RoomWidth { get; private set; } = 750;
     public float RoomHeight { get; private set; } = 750;
     public float RoomDepth { get; private set; } = 20;
@@ -20,6 +20,8 @@ public class Room
     private FloorTexture[] textures = FloorTexture.GetFloorTextures();
     bool IsTaken = false;
     private PointF cursor = PointF.Empty;
+    Color wallColor = Colors.GetRandomColor();
+    Color tileColor = Colors.GetRandomColor();
   
     public Room(PictureBox pictureBox)
     {
@@ -69,7 +71,7 @@ public class Room
         drawFloor(g);
 
         drawDecorations(g);
-        drawPlayer(g);
+        // drawPlayer(g);
     }
 
     private void InitializeRoom()
@@ -78,7 +80,7 @@ public class Room
         int rows = (int)(RoomHeight / tileHeight);
         int cols = (int)(RoomWidth / tileWidth);
         Decorations = new IDecoration[rows, cols];
-        Player = new TestPlayer[rows, cols];
+        // Player = new TestPlayer[rows, cols];
     }
     
     private void drawDecorations(Graphics g)
@@ -107,35 +109,34 @@ public class Room
         }
     }
 
-    private void drawPlayer(Graphics g)
-    {
-        int rows = (int)(RoomHeight / tileHeight);
-        int cols = (int)(RoomWidth / tileWidth);
+    // private void drawPlayer(Graphics g)
+    // {
+    //     int rows = (int)(RoomHeight / tileHeight);
+    //     int cols = (int)(RoomWidth / tileWidth);
 
-        var center = new PointF(
-            pictureBox.ClientSize.Width / 2,
-            pictureBox.ClientSize.Height / 2
-        ).Normal();
+    //     var center = new PointF(
+    //         pictureBox.ClientSize.Width / 2,
+    //         pictureBox.ClientSize.Height / 2
+    //     ).Normal();
 
-        for (int i = rows - 1; i >= 0; i--)
-        {
-            for (int j = cols - 1; j >= 0; j--)
-            {
-                TestPlayer player = Player[i, j];
-                if (player is null)
-                    continue;
+    //     for (int i = rows - 1; i >= 0; i--)
+    //     {
+    //         for (int j = cols - 1; j >= 0; j--)
+    //         {
+    //             // TestPlayer player = Player[i, j];
+    //             if (player is null)
+    //                 continue;
                 
-                float x = center.X - RoomWidth / 2 + j * tileWidth;
-                float y = center.Y - RoomHeight / 2 + i * tileHeight;
-                var screenPoint = new PointF(x, y).Isometric(); 
-                player.Draw(g, screenPoint.X, screenPoint.Y);
-            }
-        }
-    }
+    //             float x = center.X - RoomWidth / 2 + j * tileWidth;
+    //             float y = center.Y - RoomHeight / 2 + i * tileHeight;
+    //             var screenPoint = new PointF(x, y).Isometric(); 
+    //             player.Draw(g, screenPoint.X, screenPoint.Y);
+    //         }
+    //     }
+    // }
 
     private void drawFloor(Graphics g)
     {        
-        Color tileColor = Color.Pink;
         var center = new PointF(
             pictureBox.ClientSize.Width / 2,
             pictureBox.ClientSize.Height / 2
@@ -200,7 +201,7 @@ public class Room
             center.Y + (RoomHeight / 2), 
             -230,
             RoomWidth + 20, 20, 270,
-            Color.Purple
+            wallColor
         );
 
         drawParallelepiped(g,
@@ -208,7 +209,7 @@ public class Room
             center.Y - (RoomHeight / 2), 
             -230,
             20, RoomHeight, 270,
-            Color.Purple
+            wallColor
         );
     }
 

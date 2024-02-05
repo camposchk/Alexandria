@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
 
 public class Menu
@@ -29,12 +28,14 @@ public class Menu
     private Rectangle rec;
     private Rectangle close;
     private Image ruby = Image.FromFile("./Images/coin2.png");
-    private Image chest1 = Image.FromFile("./Images/chest1.png");
+    private Image chest1 = Image.FromFile("./Images/vault.png");
     private Image chest2 = Image.FromFile("./Images/chest2.png");
     private Image shop1 = Image.FromFile("./Images/shop1.png");
     private Image shop2 = Image.FromFile("./Images/shop2.png");
     private Image ball1 = Image.FromFile("./Images/ball1.png");
     private Image ball2 = Image.FromFile("./Images/ball2.png");
+
+    Color menuColor = Colors.GetRandomColor();
 
     public Menu(PictureBox pictureBox)
     {
@@ -75,7 +76,7 @@ public class Menu
         if (IsActive)
         {
             int opacity = 200;  
-            Color color = Color.FromArgb(opacity, Color.Black);
+            Color color = Color.FromArgb(opacity, menuColor);
 
             // Logo = new Bitmap(Logo, new Size(100, 100));
 
@@ -103,10 +104,6 @@ public class Menu
                 g.DrawImage(ball1, items[3]);
             else
                 g.DrawImage(ball2, items[3]);
-
-            // g.DrawString(Shop.ToString(), new Font("Mexcellent3D-Regular", 18, FontStyle.Regular), Brushes.Red, new PointF(100, 100));
-
-            // g.DrawImage(Logo, new PointF(pictureBox.ClientSize.Width - 125, 20));
         }
     }
 
@@ -169,7 +166,7 @@ public class Menu
 
     public void MenuLayout(Graphics g, int n)
     {
-        Color color = Color.FromArgb(200, 0, 0, 0);
+        Color color = Color.FromArgb(200, menuColor.R, menuColor.G, menuColor.B);;
         SolidBrush brush = new SolidBrush(color);
 
         g.FillRectangle(brush, rec);
@@ -182,6 +179,8 @@ public class Menu
         {
             g.FillRectangle(brush, rec.X + 100 * i, rec.Y - 30, 100, 30);
             g.DrawRectangle(Pens.Gray, rec.X + 100 * i, rec.Y - 30, 100, 30);
+
+            brush = GetDarkerBrush(brush);
         }
     }
 
@@ -300,5 +299,20 @@ public class Menu
     public void OpenOracle(Graphics g)
     {
         MenuLayout(g, 1);
+    }
+
+    public SolidBrush GetDarkerBrush(Brush originalBrush)
+    {
+        Color originalColor = ((SolidBrush)originalBrush).Color;
+
+        float factor = 0.9f;
+
+        int red = (int)(originalColor.R * factor);
+        int green = (int)(originalColor.G * factor);
+        int blue = (int)(originalColor.B * factor);
+
+        Color darkerColor = Color.FromArgb(red, green, blue);
+
+        return new SolidBrush(darkerColor);
     }
 }
