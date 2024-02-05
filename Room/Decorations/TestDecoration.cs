@@ -7,6 +7,13 @@ public class TestDecoration : IDecoration
     public Room Room { get; set; }
     private bool moving = false;
     public Vector3 Root { get; set; }
+    public int X { get; set; }
+    public int Y { get; set; }
+
+    public float Cost => throw new NotImplementedException();
+
+    public List<Image> Items => throw new NotImplementedException();
+
     List<(PointF[], Brush)> faces = new();
     public bool OpenFloorMenu = false;
     public RectangleF MenuFloorMove { get; private set; }
@@ -137,6 +144,16 @@ public class TestDecoration : IDecoration
     }
 
     public void Store()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Draw(Graphics g)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Move(Point mouseLocation)
     {
         throw new NotImplementedException();
     }

@@ -3,6 +3,7 @@ using System.Drawing;
 
 public class WallDecoration : IDecoration
 {
+    public float Cost { get; private set; }
     public float X { get; set; }
     public float Y { get; set; }
     public float Z { get; set; }
@@ -43,6 +44,16 @@ public class WallDecoration : IDecoration
     }
 
     public void Draw(Graphics g, float x, float y)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void Draw(Graphics g)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void Move(Point mouseLocation)
     {
         throw new System.NotImplementedException();
     }

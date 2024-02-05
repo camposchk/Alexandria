@@ -16,6 +16,7 @@ public class FloorDecoration : IDecoration
     public float Depth { get; set; }
 
     public int TileSize { get; set; }
+    public float Cost { get; private set; }
     public List<Image> Items { get; set; }
 
     public List<RectangleF> Bounds { get; private set; } = new List<RectangleF>();
@@ -37,8 +38,9 @@ public class FloorDecoration : IDecoration
 
     Room IDecoration.Room { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-    public FloorDecoration(float x, float y, float width, float height, float depth, int tilesize, string imgPath)
+    public FloorDecoration(float cost, float x, float y, float width, float height, float depth, int tilesize, string imgPath)
     {
+        this.Cost = cost;
         this.X = x;
         this.Y = y;
         this.Width = width;
@@ -55,11 +57,11 @@ public class FloorDecoration : IDecoration
     {
         return new FloorDecoration[]
         {
-            new(300, -900, 100, 100, 75, 2, "./Images/Decos/Floor/couch.png"),
-            new(400, -900, 50, 50, 150, 2, "./Images/Decos/Floor/lamp.png"),
-            new(500, -900, 100, 100, 100, 2, "./Images/Decos/Floor/table.png"),
-            new(600, -900, 50, 125, 150, 2, "./Images/Decos/Floor/closet.png"),
-            new(700, -900, 100, 50, 100, 2, "./Images/Decos/Floor/chair.png"),
+            new(80, 300, -900, 100, 100, 75, 2, "./Images/Decos/Floor/couch.png"),
+            new(20, 400, -900, 50, 50, 150, 2, "./Images/Decos/Floor/lamp.png"),
+            new(30, 500, -900, 100, 100, 100, 2, "./Images/Decos/Floor/table.png"),
+            new(40, 600, -900, 50, 125, 150, 2, "./Images/Decos/Floor/closet.png"),
+            new(50, 700, -900, 100, 50, 100, 2, "./Images/Decos/Floor/chair.png"),
         };
     }
 
@@ -254,5 +256,15 @@ public class FloorDecoration : IDecoration
         gfx.DrawImage(image, new Rectangle(0, 0, bmp.Width, bmp.Height), 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, attributes);
 
         return bmp;
+    }
+
+    public void Move(Point mouseLocation)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Draw(Graphics g)
+    {
+        throw new NotImplementedException();
     }
 }

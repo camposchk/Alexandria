@@ -10,11 +10,12 @@ public class Player
     public float Width { get; set; } = 50;
     public float Height { get; set; } = 50;
     public float Depth { get; set; } = 100;
-    public int Ruby { get; set; } = 100;
+    public float Ruby { get; set; } = 100;
 
     public bool IsSpeaking = false;
 
     private List<IPlayerOutfit> outfits = new List<IPlayerOutfit>();
+    public List<IDecoration> purchasedDecorations = new List<IDecoration>();
 
     public void AddOutfit(IPlayerOutfit outfit)
     {
@@ -63,6 +64,19 @@ public class Player
 
         X += dx;
         Y += dy;
+    }
+
+    public void Buy(IDecoration deco)
+    {
+        if (Ruby >= deco.Cost)
+        {
+            Ruby -= deco.Cost;
+            purchasedDecorations.Add(deco);
+        }
+        else
+        {
+            // Não tem rubis suficientes. Lidar com isso (mensagem de erro, etc.)
+        }
     }
 
     public Brush GetDarkerBrush(Brush originalBrush)

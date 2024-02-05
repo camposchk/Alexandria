@@ -6,12 +6,13 @@ using System.Windows.Forms;
 
 public class Menu
 {
+    private PictureBox pictureBox;
     public FloorDecoration[] FloorDecorations { get; set; }
+    public Player player { get; set; }
     public bool IsInventoryOpen { get; private set; } = false;
     public bool IsShopOpen { get; private set; } = false;
     public bool IsCreatorOpen { get; private set; } = false;
     public bool IsOracleOpen { get; private set; } = false;
-    private PictureBox pictureBox;
     public bool IsActive;
 
     public int Height { get; private set; }
@@ -23,13 +24,17 @@ public class Menu
     public Label Oraculo = new();
 
     private Rectangle menu { get; set; }
-
+    private List<RectangleF> shopItems { get; set; } = new();
     private Rectangle[] items = new Rectangle[4];
-
-    // public Image Logo { get; set; } = Image.FromFile("./Images/muse.png");
-
     private Rectangle rec;
     private Rectangle close;
+    private Image ruby = Image.FromFile("./Images/coin2.png");
+    private Image chest1 = Image.FromFile("./Images/chest1.png");
+    private Image chest2 = Image.FromFile("./Images/chest2.png");
+    private Image shop1 = Image.FromFile("./Images/shop1.png");
+    private Image shop2 = Image.FromFile("./Images/shop2.png");
+    private Image ball1 = Image.FromFile("./Images/ball1.png");
+    private Image ball2 = Image.FromFile("./Images/ball2.png");
 
     public Menu(PictureBox pictureBox)
     {
@@ -48,6 +53,7 @@ public class Menu
         items[3] = new(menu.Left + 50, items[2].Bottom + 100, 100, 100);
 
         FloorDecorations = FloorDecoration.GetFloorDecorations();
+        player = new Player();
 
         this.rec = new Rectangle(
             pictureBox.ClientSize.Width / 4, 
@@ -77,11 +83,26 @@ public class Menu
                 g.FillRectangle(brush, menu);
 
             g.DrawRectangle(Pens.Gray, menu);
+
+            g.DrawString($"{player.Ruby}", new Font("Arial", 12), Brushes.DarkRed, menu.X + 20, menu.Y + 10);
+            g.DrawImage(ruby, new Rectangle(menu.X + 40, menu.Y, 50, 50));
             
-            g.FillRectangle(Brushes.Red, items[0]);
-            g.FillRectangle(Brushes.Blue, items[1]);
+            if (!IsInventoryOpen)
+                g.DrawImage(chest1, items[0]);
+            else 
+                g.DrawImage(chest2, items[0]);
+
+            if (!IsShopOpen)
+                g.DrawImage(shop1, items[1]);
+            else
+                g.DrawImage(shop2, items[1]);
+
             g.FillRectangle(Brushes.Yellow, items[2]);
-            g.FillRectangle(Brushes.Green, items[3]);
+
+            if(!IsOracleOpen)
+                g.DrawImage(ball1, items[3]);
+            else
+                g.DrawImage(ball2, items[3]);
 
             // g.DrawString(Shop.ToString(), new Font("Mexcellent3D-Regular", 18, FontStyle.Regular), Brushes.Red, new PointF(100, 100));
 
@@ -105,6 +126,16 @@ public class Menu
 
         if (close.Contains(mouseLocation))
             CloseAllMenus();
+
+
+        for (int i = 0; i < shopItems.Count; i++)
+        {
+            if (shopItems[i].Contains(mouseLocation))
+            {
+                player.Buy(FloorDecorations[i]);
+                break;
+            }
+        }
     }
 
     protected virtual void OnItemClick(int index)
@@ -114,16 +145,16 @@ public class Menu
         switch (index)
         {
             case 0:
-                IsInventoryOpen = true;
+                IsInventoryOpen = !IsInventoryOpen;
                 break;
             case 1:
-                IsShopOpen = true;
+                IsShopOpen = !IsShopOpen;
                 break;
             case 2:
-                IsCreatorOpen = true;
+                IsCreatorOpen = !IsCreatorOpen;
                 break;
             case 3:
-                IsOracleOpen = true;
+                IsOracleOpen = !IsOracleOpen;
                 break;
         }
     }
@@ -175,7 +206,7 @@ public class Menu
 
         int column = 0; 
 
-        foreach (var floorDecoration in FloorDecorations)
+        foreach (var floorDecoration in player.purchasedDecorations)
         {
             foreach(var image in floorDecoration.Items)
             {
@@ -208,7 +239,57 @@ public class Menu
 
     public void OpenShop(Graphics g)
     {
-        MenuLayout(g, 2);
+        MenuLayout(g, 4);
+
+        Rectangle inventoryRect = new Rectangle(
+            pictureBox.ClientSize.Width / 4, 
+            pictureBox.ClientSize.Height / 4, 
+            pictureBox.ClientSize.Width / 2 - 100, 
+            pictureBox.ClientSize.Height / 2 - 100
+        );
+        
+        int margin = 20;
+        int spacingBetweenImages = 10;
+        int maxColumns = (inventoryRect.Width - 2 * margin) / (50 + spacingBetweenImages); 
+        int imageSize = 50; 
+
+        int x = inventoryRect.X + margin;
+        int y = inventoryRect.Y + margin;
+
+        int column = 0; 
+
+        foreach (var floorDecoration in FloorDecorations)
+        {
+            foreach(var image in floorDecoration.Items)
+            {
+                if (column >= maxColumns)
+                {
+                    column = 0;
+                    x = inventoryRect.X + margin;
+                    y += imageSize + spacingBetweenImages;
+                }
+
+                float scaleWidth = (float)imageSize / image.Width;
+                float scaleHeight = (float)imageSize / image.Height;
+
+                float scale = Math.Min(scaleWidth, scaleHeight);
+
+                int newWidth = (int)(image.Width * scale);
+                int newHeight = (int)(image.Height * scale);
+
+                int centerX = x + (imageSize - newWidth) / 2;
+                int centerY = y + (imageSize - newHeight) / 2;
+
+                g.DrawImage(image, new Rectangle(centerX, centerY, newWidth, newHeight));
+                g.DrawRectangle(Pens.Gray, new Rectangle(x, y, imageSize, imageSize)); 
+
+                shopItems.Add(new RectangleF(x, y, imageSize, imageSize));
+
+                x += imageSize + spacingBetweenImages;
+
+                column++;
+            }
+        }
     }
 
     public void OpenCreator(Graphics g)

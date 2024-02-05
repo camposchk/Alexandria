@@ -42,7 +42,6 @@ public partial class Game : Form
             Interval = 10
         };
 
-
         player = new Player();
         player.AddOutfit(new HatOutfit());
         player.AddOutfit(new ShirtOutfit());
@@ -79,7 +78,8 @@ public partial class Game : Form
             Text = "Falar",
             Width = 50, 
             Height = 25, 
-            BackColor = Color.White,
+            BackColor = Color.FromArgb(200, 0, 0, 0),
+            ForeColor = Color.White,
             Location = new Point(speechTextBox.Right + 10, this.ClientSize.Height - 101),
             Anchor = AnchorStyles.Bottom
         };
@@ -87,39 +87,38 @@ public partial class Game : Form
         tm.Tick += (o, e) =>
         {
             g.Clear(Color.Black);
+
             room.Draw(g);
 
-            if (menu.IsInventoryOpen) menu.OpenInventory(g);
-            if (menu.IsShopOpen) menu.OpenShop(g);
-            if (menu.IsCreatorOpen) menu.OpenCreator(g);
-            if (menu.IsOracleOpen) menu.OpenOracle(g);
+            
 
             if(playerIsInFront)
             {
                 // foreach (var deco in floorDecorations)
-                //     deco.Draw(g);
+                //     deco.Draw(g, 0, 0);
 
                 player.Draw(g, player.X, player.Y, player.Z, player.Width, player.Height, player.Depth, Color.Yellow);
-                player.Draw(g, 100, -2500, 0, 70, 70, 140, Color.Yellow);
                 player.Move();
-                // room.Player[0, 0].Move();
 
             }
 
             if(!playerIsInFront)
             {
                 player.Draw(g, player.X, player.Y, player.Z, player.Width, player.Height, player.Depth, Color.Yellow);
-                player.Draw(g, 100, -2500, 0, 70, 70, 140, Color.Yellow);
                 player.Move();
-                // room.Player[0, 0].Move();
 
                 // foreach (var deco in floorDecorations)
-                //     deco.Draw(g);
+                //     deco.Draw(g, 0, 0);
             }
 
             menu.Draw(g);
 
-            // g.DrawString($"{deco.X}, {deco.Y}", SystemFonts.MenuFont, Brushes.White, PointF.Empty);
+            if (menu.IsInventoryOpen) menu.OpenInventory(g);
+            if (menu.IsShopOpen) menu.OpenShop(g);
+            if (menu.IsCreatorOpen) menu.OpenCreator(g);
+            if (menu.IsOracleOpen) menu.OpenOracle(g);
+
+            g.DrawString($"{room.IndexSelection.X}, {room.IndexSelection.Y}", SystemFonts.MenuFont, Brushes.White, PointF.Empty);
             pb.Refresh();
         };
 
@@ -188,7 +187,6 @@ public partial class Game : Form
                 deco.TryMove(e.Location);
         };
 
-        Controls.Add(ruby);
         Controls.Add(speechTextBox);
         Controls.Add(speakButton);
         Controls.Add(pb);

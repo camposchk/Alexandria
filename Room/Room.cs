@@ -14,7 +14,6 @@ public class Room
     public float RoomWidth { get; private set; } = 750;
     public float RoomHeight { get; private set; } = 750;
     public float RoomDepth { get; private set; } = 20;
-    
     private const int tileWidth = 50;
     private const int tileHeight = 50;
     private PictureBox pictureBox;
@@ -183,6 +182,7 @@ public class Room
 
                     this.IndexSelection = new Point(i, j);
                     this.NormalSelection = new PointF(x, y);
+                    this.IndexSelection = new Point(i, j);
                 }
             }
         }
