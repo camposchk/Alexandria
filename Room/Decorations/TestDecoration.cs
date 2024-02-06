@@ -19,6 +19,7 @@ public class TestDecoration : IDecoration
     public RectangleF MenuFloorMove { get; private set; }
     public RectangleF MenuFloorSpin { get; private set; }
     public RectangleF MenuFloorStore { get; private set; }
+    public int Quantity { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     SolidBrush brush = new SolidBrush(Colors.GetRandomColor());
     public TestDecoration()
@@ -147,7 +148,7 @@ public class TestDecoration : IDecoration
 
     public void Store()
     {
-        throw new NotImplementedException();
+        Room.Remove(this);
     }
 
     public void Draw(Graphics g)

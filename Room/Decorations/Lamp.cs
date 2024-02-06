@@ -19,31 +19,34 @@ public class Lamp : IDecoration
     public RectangleF MenuFloorMove { get; private set; }
     public RectangleF MenuFloorSpin { get; private set; }
     public RectangleF MenuFloorStore { get; private set; }
+    public int Quantity { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
     public Lamp()
     {
         Root = new Vector3(0f, 0f, 20f);
         add(
-            (25f, 25f, -5f, 50f, 50f, 5f)
+            (0f, 0f, 15f, 50f, 50f, 5f)
             .Parallelepiped()
             .Isometric(),
             Brushes.Gray
         );
 
-
         add(
-            (28f, 28f, 0f, 4f, 4f, 15f)
+            (27f, 27f, -60f, 4f, 4f, 80f)
             .Parallelepiped()
             .Isometric(),
             Brushes.Silver
         );
 
-
-        add(
-            (23f, 23f, -15f, 14f, 14f, 10f)
-            .Parallelepiped()
-            .Isometric(),
-            Brushes.LightYellow
-        );
+        for (int i = 0; i < 5; i++)
+        {
+            add(
+                (10f + i, 10f + i, -57f - 3 * i, 30f - 2 * i, 30f - 2 * i, 3f)
+                .Parallelepiped()
+                .Isometric(),
+                Brushes.LightYellow
+            );
+        }
 
     }
 

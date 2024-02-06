@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.ConstrainedExecution;
@@ -69,8 +70,7 @@ public class Room
     {
         drawWalls(g);
         drawFloor(g);
-
-        drawDecorations(g);
+        drawItems(g);
         // drawPlayer(g);
     }
 
@@ -83,7 +83,7 @@ public class Room
         // Player = new TestPlayer[rows, cols];
     }
     
-    private void drawDecorations(Graphics g)
+    private void drawItems(Graphics g)
     {
         int rows = (int)(RoomHeight / tileHeight);
         int cols = (int)(RoomWidth / tileWidth);

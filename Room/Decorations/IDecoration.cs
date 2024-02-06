@@ -10,8 +10,7 @@ public interface IDecoration
     void Click(PointF cursor) { }
     void TryMove(Point mouseLocation);
     float Cost { get; }
-    public List<Image> Items { get; }
-    void Draw(Graphics g);
+    int Quantity { get; set; }
     void Move(Point mouseLocation);
 
     void Spin();

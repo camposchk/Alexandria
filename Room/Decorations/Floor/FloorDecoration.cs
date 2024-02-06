@@ -12,6 +12,7 @@ public class FloorDecoration : IDecoration
     public float Depth { get; set; }
 
     public int TileSize { get; set; }
+    public int Quantity { get; set; }
     public float Cost { get; private set; }
     public List<Image> Items { get; set; }
 
@@ -34,9 +35,10 @@ public class FloorDecoration : IDecoration
 
     Room IDecoration.Room { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-    public FloorDecoration(float cost, float x, float y, float width, float height, float depth, int tilesize, string imgPath)
+    public FloorDecoration(float cost, int quantity, float x, float y, float width, float height, float depth, int tilesize, string imgPath)
     {
         this.Cost = cost;
+        this.Quantity = quantity;
         this.X = x;
         this.Y = y;
         this.Width = width;
@@ -53,11 +55,11 @@ public class FloorDecoration : IDecoration
     {
         return new FloorDecoration[]
         {
-            new(80, 300, -900, 100, 100, 75, 2, "./Images/Decos/Floor/couch.png"),
-            new(20, 400, -900, 50, 50, 150, 2, "./Images/Decos/Floor/lamp.png"),
-            new(30, 500, -900, 100, 100, 100, 2, "./Images/Decos/Floor/table.png"),
-            new(40, 600, -900, 50, 125, 150, 2, "./Images/Decos/Floor/closet.png"),
-            new(50, 700, -900, 100, 50, 100, 2, "./Images/Decos/Floor/chair.png"),
+            new(80, 2, 300, -900, 100, 100, 75, 2, "./Images/Decos/Floor/couch.png"),
+            new(20, 3, 400, -900, 50, 50, 150, 2, "./Images/Decos/Floor/lamp.png"),
+            new(30, 4, 500, -900, 100, 100, 100, 2, "./Images/Decos/Floor/table.png"),
+            new(40, 5, 600, -900, 50, 125, 150, 2, "./Images/Decos/Floor/closet.png"),
+            new(50, 6, 700, -900, 100, 50, 100, 2, "./Images/Decos/Floor/chair.png"),
         };
     }
 

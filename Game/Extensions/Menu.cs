@@ -86,24 +86,34 @@ public class Menu
             g.DrawRectangle(Pens.Gray, menu);
 
             g.DrawString($"{player.Ruby}", new Font("Arial", 12), Brushes.DarkRed, menu.X + 20, menu.Y + 10);
-            g.DrawImage(ruby, new Rectangle(menu.X + 40, menu.Y, 50, 50));
+            g.DrawImage(ruby, new Rectangle(menu.X + 55, menu.Y + 9, 20, 20));
             
-            if (!IsInventoryOpen)
-                g.DrawImage(chest1, items[0]);
-            else 
-                g.DrawImage(chest2, items[0]);
+            // if (!IsInventoryOpen)
+            //     g.DrawImage(chest1, items[0]);
+            // else 
+            //     g.DrawImage(chest2, items[0]);
 
-            if (!IsShopOpen)
-                g.DrawImage(shop1, items[1]);
-            else
-                g.DrawImage(shop2, items[1]);
+            // if (!IsShopOpen)
+            //     g.DrawImage(shop1, items[1]);
+            // else
+            //     g.DrawImage(shop2, items[1]);
 
-            g.FillRectangle(Brushes.Yellow, items[2]);
+            g.FillEllipse(new SolidBrush(Colors.GetRandomColor()), items[0]);
+            g.DrawEllipse(new Pen(Colors.GetRandomColor()), items[0]);
+            
+            g.FillEllipse(new SolidBrush(Colors.GetRandomColor()), items[1]);
+            g.DrawEllipse(new Pen(Colors.GetRandomColor()), items[1]);
 
-            if(!IsOracleOpen)
-                g.DrawImage(ball1, items[3]);
-            else
-                g.DrawImage(ball2, items[3]);
+            g.FillEllipse(new SolidBrush(Colors.GetRandomColor()), items[2]);
+            g.DrawEllipse(new Pen(Colors.GetRandomColor()), items[2]);
+
+            g.FillEllipse(new SolidBrush(Colors.GetRandomColor()), items[3]);
+            g.DrawEllipse(new Pen(Colors.GetRandomColor()), items[3]);
+
+            // if(!IsOracleOpen)
+            //     g.DrawImage(ball1, items[3]);
+            // else
+            //     g.DrawImage(ball2, items[3]);
         }
     }
 
@@ -203,37 +213,7 @@ public class Menu
         int x = inventoryRect.X + margin;
         int y = inventoryRect.Y + margin;
 
-        int column = 0; 
-
-        foreach (var floorDecoration in player.purchasedDecorations)
-        {
-            foreach(var image in floorDecoration.Items)
-            {
-                if (column >= maxColumns)
-                {
-                    column = 0;
-                    x = inventoryRect.X + margin;
-                    y += imageSize + spacingBetweenImages;
-                }
-
-                float scaleWidth = (float)imageSize / image.Width;
-                float scaleHeight = (float)imageSize / image.Height;
-
-                float scale = Math.Min(scaleWidth, scaleHeight);
-
-                int newWidth = (int)(image.Width * scale);
-                int newHeight = (int)(image.Height * scale);
-
-                int centerX = x + (imageSize - newWidth) / 2;
-                int centerY = y + (imageSize - newHeight) / 2;
-
-                g.DrawImage(image, new Rectangle(centerX, centerY, newWidth, newHeight));
-
-                x += imageSize + spacingBetweenImages;
-
-                column++;
-            }
-        }
+        int column = 0;
     }
 
     public void OpenShop(Graphics g)
@@ -257,6 +237,9 @@ public class Menu
 
         int column = 0; 
 
+        g.DrawString($"{player.Ruby}", new Font("Arial", 12), Brushes.DarkRed, close.X - 80, close.Y + 10);
+        g.DrawImage(ruby, new Rectangle(close.X - 45, close.Y + 9, 20, 20));
+
         foreach (var floorDecoration in FloorDecorations)
         {
             foreach(var image in floorDecoration.Items)
@@ -279,8 +262,11 @@ public class Menu
                 int centerX = x + (imageSize - newWidth) / 2;
                 int centerY = y + (imageSize - newHeight) / 2;
 
-                g.DrawImage(image, new Rectangle(centerX, centerY, newWidth, newHeight));
-                g.DrawRectangle(Pens.Gray, new Rectangle(x, y, imageSize, imageSize)); 
+                if (floorDecoration.Quantity > 0)
+                {
+                    g.DrawImage(image, new Rectangle(centerX, centerY, newWidth, newHeight));
+                    g.DrawString(floorDecoration.Quantity.ToString(), new Font("Arial", 12), Brushes.DarkRed, new Rectangle(centerX, centerY, newWidth, newHeight));
+                }
 
                 shopItems.Add(new RectangleF(x, y, imageSize, imageSize));
 

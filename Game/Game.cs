@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -6,7 +8,7 @@ public partial class Game : Form
     private PictureBox pb;
     private Timer tm;
     private Graphics g;
-    private Player player;
+    private TestPlayer player;
     private Room room;
     private Menu menu;
     private TextBox speechTextBox;
@@ -38,12 +40,12 @@ public partial class Game : Form
             Interval = 10
         };
 
-        player = new Player();
-        player.AddOutfit(new HatOutfit());
-        player.AddOutfit(new ShirtOutfit());
+        player = new TestPlayer();
+        // player.AddOutfit(new HatOutfit());
+        // player.AddOutfit(new ShirtOutfit());
 
         room = new Room(pb);
-
+        room.Set(player, 3, 3);
         room.Set(new TestDecoration(), 5, 5);
         room.Set(new TestDecoration(), 8, 8);
         room.Set(new Lamp(), 10, 10);
@@ -55,7 +57,20 @@ public partial class Game : Form
             Width = 600, 
             Height = 20, 
             Location = new Point(this.ClientSize.Width / 2 - 300, this.ClientSize.Height - 100), 
-            Anchor = AnchorStyles.Bottom
+            Anchor = AnchorStyles.Bottom,
+            MaxLength = 21
+        };
+
+        speechTextBox.KeyDown += (o, e) =>
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                if (string.IsNullOrEmpty(speechTextBox.Text))
+                    return;
+
+                player.Speak(speechTextBox.Text);
+                speechTextBox.Clear();
+            }
         };
 
         speakButton = new Button
@@ -69,13 +84,20 @@ public partial class Game : Form
             Anchor = AnchorStyles.Bottom
         };
 
+        speakButton.Click += (o, e) => 
+        {
+            if (string.IsNullOrEmpty(speechTextBox.Text))
+                return;
+
+            player.Speak(speechTextBox.Text);
+            speechTextBox.Clear();
+        };
+
         tm.Tick += (o, e) =>
         {
             g.Clear(BackColor);
 
             room.Draw(g);
-
-            player.Draw(g, player.X, player.Y, player.Z, player.Width, player.Height, player.Depth, color);
             player.Move();
 
             menu.Draw(g);

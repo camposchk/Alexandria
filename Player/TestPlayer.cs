@@ -1,32 +1,40 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Numerics;
 
-public class TestPlayer 
+public class TestPlayer : IDecoration
 {
     public Vector3 Root { get; set; }
+    public float X { get; set; } = 200;
+    public float Y { get; set; } = -400;
+    public float Z { get; set; } = 0;
+    public float Width { get; set; } = 50;
+    public float Height { get; set; } = 50;
+    public float Depth { get; set; } = 100;
+    public float Ruby { get; set; } = 100;
+    public Color Color { get; set; } = Colors.GetRandomColor();
+    public Room Room { get; set; }
 
-    List<(PointF[], Brush)> faces = new();
+    public float Cost => 0f;
+
+    public int Quantity { get; set; }
+
+    public List<Image> Items => throw new NotImplementedException();
+
+    List<Message> Messages = new List<Message>();
 
     public TestPlayer()
     {
         Root = new Vector3(0f, 0f, 20f);
-        add(
-            (0f, 0f, -80f, 50f, 50f, 100f)
-            .Parallelepiped()
-            .Isometric(), 
-            Brushes.Yellow
-        );
     }
 
-    private void add(PointF[][] faces, Brush baseBrush)
+    public void Speak(string text)
     {
-        foreach (var face in faces)
-        {
-            this.faces.Add((face, baseBrush));
-            baseBrush = getDarkerBrush(baseBrush);
-        }
+        var ballon = new PointF((int)this.X, (int)this.Y).Isometric();
+        Message message = new Message(ballon, text, (int)this.Depth);
+        this.Messages.Add(message);
     }
 
     Brush getDarkerBrush(Brush originalBrush)
@@ -46,36 +54,62 @@ public class TestPlayer
 
     public void Draw(Graphics g, float x, float y)
     {
-        var basePt = PointF.Empty.Isometric();
-        g.TranslateTransform(basePt.X + x, basePt.Y + y);
+        PointF[][] player = (x, y, 20f - Depth, Width, Height, Depth)
+            .Parallelepiped()
+            .Isometric();
 
-        foreach (var face in faces)
-            g.FillPolygon(face.Item2, face.Item1);
+        Brush brush = new SolidBrush(Color);
+        foreach (var face in player)
+        {
+            g.FillPolygon(brush, face);
+            brush = GetDarkerBrush(brush);
+        }
 
-        g.ResetTransform();
+        Messages = Messages
+            .Where(m => m.IsActivated)
+            .ToList();
+        foreach (var message in Messages)
+        {
+            message.Draw(g);
+        }
     }
 
-    // public void StartMove(this (int i, int j) tuple)
-    // {
-    //     (i, j) = tuple;
-    //     target = new Point(i, j);
-    // }
+    public void Move()
+    {
 
-    // public void Move()
-    // {
-    //     // Calculate the vector from the current position to the target
-    //     Vector3 direction = target - Root;
-    //     float distance = direction.Length();
+    }
 
-    //     // Normalize the direction vector, and then move towards the target
-    //     if (distance < moveSpeed)
-    //     {
-    //         Root = target; // If close enough to the target, just set the position to the target
-    //     }
-    //     else
-    //     {
-    //         direction = Vector3.Normalize(direction);
-    //         Root += direction * moveSpeed; // Move towards the target
-    //     }
-    // }
+    public void StartMove(PointF point)
+    {
+
+    }
+
+    public Brush GetDarkerBrush(Brush originalBrush)
+    {
+        Color originalColor = ((SolidBrush)originalBrush).Color;
+
+        float factor = 0.8f;
+
+        int red = (int)(originalColor.R * factor);
+        int green = (int)(originalColor.G * factor);
+        int blue = (int)(originalColor.B * factor);
+
+        Color darkerColor = Color.FromArgb(red, green, blue);
+
+        return new SolidBrush(darkerColor);
+    }
+
+    public void TryMove(Point mouseLocation)
+    {
+        
+    }
+
+    public void Move(Point mouseLocation)
+    {
+        
+    }
+
+    public void Spin() { }
+
+    public void Store() { }
 }
