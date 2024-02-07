@@ -216,53 +216,31 @@ public class Menu
         int column = 0;
     }
 
-public void OpenShop(Graphics g)
-{
-    MenuLayout(g, 4);
-
-    Rectangle inventoryRect = new Rectangle(
-        pictureBox.ClientSize.Width / 4, 
-        pictureBox.ClientSize.Height / 4, 
-        pictureBox.ClientSize.Width / 2 - 100, 
-        pictureBox.ClientSize.Height / 2 - 100
-    );
-
-    int margin = 20;
-    int spacingBetweenImages = 10;
-    int maxColumns = (inventoryRect.Width - 2 * margin) / (50 + spacingBetweenImages);
-    int imageSize = 50;
-
-    int x = inventoryRect.X + margin;
-    int y = inventoryRect.Y + margin;
-
-    int column = 0;
-
-    g.DrawString($"{player.Ruby}", new Font("Arial", 12), Brushes.DarkRed, close.X - 80, close.Y + 10);
-
-    for (int i = 0; i < shopItems.Count; i++)
+    public void OpenShop(Graphics g)
     {
-        if (column >= maxColumns)
-        {
-            column = 0;
-            x = inventoryRect.X + margin;
-            y += imageSize + spacingBetweenImages;
-        }
+        MenuLayout(g, 4);
 
-        if (testDecoration.Quantity > 0)
-        {
-            testDecoration.Draw(g, x, y);
-            g.DrawString(testDecoration.Quantity.ToString(), new Font("Arial", 12), Brushes.DarkRed, x, y);
-        }
+        Rectangle inventoryRect = new Rectangle(
+            pictureBox.ClientSize.Width / 4, 
+            pictureBox.ClientSize.Height / 4, 
+            pictureBox.ClientSize.Width / 2 - 100, 
+            pictureBox.ClientSize.Height / 2 - 100
+        );
+        
+        int margin = 20;
+        int spacingBetweenImages = 10;
 
-        shopItems[i] = new RectangleF(x, y, imageSize, imageSize);
+        int x = inventoryRect.X + margin;
+        int y = inventoryRect.Y + margin;
 
-        x += imageSize + spacingBetweenImages;
-        column++;
+        g.DrawString($"{player.Ruby}", new Font("Arial", 12), Brushes.DarkRed, close.X - 80, close.Y + 10);
+        g.DrawImage(ruby, new Rectangle(close.X - 45, close.Y + 9, 20, 20));
+
+
+        testDecoration.Draw(g, x + margin, y + margin * 2);
     }
-}
-
     TestDecoration testDecoration = new TestDecoration() {
-        SizeFactor = 0.4f
+        SizeFactor = 0.6f
     };
 
     public void OpenCreator(Graphics g)

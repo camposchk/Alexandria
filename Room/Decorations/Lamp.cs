@@ -25,7 +25,7 @@ public class Lamp : IDecoration
     {
         Root = new Vector3(0f, 0f, 20f);
         add(
-            (0f, 0f, 15f, 50f, 50f, 5f)
+            (0f, 0f, 15f, 40f, 40f, 5f)
             .Parallelepiped()
             .Isometric(),
             new SolidBrush(Colors.GetRandomColor())
@@ -38,13 +38,14 @@ public class Lamp : IDecoration
             new SolidBrush(Colors.GetRandomColor())
         );
 
+        var lampBrush = new SolidBrush(Colors.GetRandomColor());
         for (int i = 0; i < 10; i++)
         {
             add(
                 (10f + i, 10f + i, -57f - 3 * i, 40f - 2 * i, 40f - 2 * i, 5f)
                 .Parallelepiped()
                 .Isometric(),
-                Brushes.Gold
+                lampBrush
             );
         }
 

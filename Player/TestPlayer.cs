@@ -89,7 +89,7 @@ public class TestPlayer : IDecoration
         var dx = ftargetX - X;
         var dy = ftargetY - Y;
         var mod = MathF.Sqrt(dx * dx + dy * dy);
-        if (mod < 5f)
+        if (mod < 2f)
         {
             activated = false;
             Room.Remove(this);
