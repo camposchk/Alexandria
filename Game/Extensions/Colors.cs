@@ -56,4 +56,30 @@ public static class Colors
         Random random = new Random();
         return colors[random.Next(colors.Length)];
     }
+
+    public static SolidBrush GetDarkerBrush(Brush originalBrush)
+    {
+        Color originalColor = ((SolidBrush)originalBrush).Color;
+
+        float factor = 0.9f;
+
+        int red = (int)(originalColor.R * factor);
+        int green = (int)(originalColor.G * factor);
+        int blue = (int)(originalColor.B * factor);
+
+        Color darkerColor = Color.FromArgb(red, green, blue);
+
+        return new SolidBrush(darkerColor);
+    }
+
+    public static Color GetDarkerColor(Color originalColor)
+    {
+        float factor = 0.8f;
+
+        int red = (int)(originalColor.R * factor);
+        int green = (int)(originalColor.G * factor);
+        int blue = (int)(originalColor.B * factor);
+
+        return Color.FromArgb(red, green, blue);
+    }
 }

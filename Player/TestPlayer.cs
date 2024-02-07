@@ -6,10 +6,15 @@ using System.Numerics;
 
 public class TestPlayer : IDecoration
 {
+    private float targetX = float.NaN;
+    private float targetY = float.NaN;
+    private float ftargetX = float.NaN;
+    private float ftargetY = float.NaN;
+
     public Vector3 Root { get; set; }
-    public float X { get; set; } = 200;
-    public float Y { get; set; } = -400;
-    public float Z { get; set; } = 0;
+    public float X { get; set; }
+    public float Y { get; set; }
+    public float Z { get; set; }
     public float Width { get; set; } = 50;
     public float Height { get; set; } = 50;
     public float Depth { get; set; } = 100;
@@ -37,24 +42,15 @@ public class TestPlayer : IDecoration
         this.Messages.Add(message);
     }
 
-    Brush getDarkerBrush(Brush originalBrush)
-    {
-        Color originalColor = ((SolidBrush)originalBrush).Color;
-
-        float factor = 0.9f;
-
-        int red = (int)(originalColor.R * factor);
-        int green = (int)(originalColor.G * factor);
-        int blue = (int)(originalColor.B * factor);
-
-        Color darkerColor = Color.FromArgb(red, green, blue);
-
-        return new SolidBrush(darkerColor);
-    }
-
     public void Draw(Graphics g, float x, float y)
     {
-        PointF[][] player = (x, y, 20f - Depth, Width, Height, Depth)
+        var normal = new PointF(x, y).Normal();
+        if (float.IsNaN(targetX))
+        {
+            this.X = normal.X;
+            this.Y = normal.Y;
+        }
+        PointF[][] player = (this.X, this.Y, 20f - Depth, Width, Height, Depth)
             .Parallelepiped()
             .Isometric();
 
@@ -62,7 +58,7 @@ public class TestPlayer : IDecoration
         foreach (var face in player)
         {
             g.FillPolygon(brush, face);
-            brush = GetDarkerBrush(brush);
+            brush = Colors.GetDarkerBrush(brush);
         }
 
         Messages = Messages
@@ -72,42 +68,112 @@ public class TestPlayer : IDecoration
         {
             message.Draw(g);
         }
-    }
-
-    public void Move()
-    {
-
-    }
-
-    public void StartMove(PointF point)
-    {
-
-    }
-
-    public Brush GetDarkerBrush(Brush originalBrush)
-    {
-        Color originalColor = ((SolidBrush)originalBrush).Color;
-
-        float factor = 0.8f;
-
-        int red = (int)(originalColor.R * factor);
-        int green = (int)(originalColor.G * factor);
-        int blue = (int)(originalColor.B * factor);
-
-        Color darkerColor = Color.FromArgb(red, green, blue);
-
-        return new SolidBrush(darkerColor);
-    }
-
-    public void TryMove(Point mouseLocation)
-    {
         
+        this.i = Room.IndexSelection.X;
+        this.j = Room.IndexSelection.Y;
+        targetX = Room.NormalSelection.X;
+        targetY = Room.NormalSelection.Y;
     }
 
-    public void Move(Point mouseLocation)
-    {
-        
+    DateTime last = DateTime.Now;
+    bool activated = false;
+    public void MovePlayer()
+    {   
+        var now = DateTime.Now;
+        var timePassed = now - last;
+        last = now;
+        var secs = (float)timePassed.TotalSeconds;
+        if (!activated)
+            return;
+
+        var dx = ftargetX - X;
+        var dy = ftargetY - Y;
+        var mod = MathF.Sqrt(dx * dx + dy * dy);
+        if (mod < 5f)
+        {
+            activated = false;
+            Room.Remove(this);
+            Room.Set(this, fi, fj);
+            return;
+        }
+
+        var dirX = dx / mod;
+        var dirY = dy / mod;
+        X += 300 * dirX * secs;
+        Y += 300 * dirY * secs;
     }
+
+    List<(int i, int j)> path = new List<(int i, int j)>();
+    public void ActivePlayer()
+    {
+        if (Room.Decorations[i, j] is not null)
+            return;
+        activated = true;
+        ftargetX = targetX;
+        ftargetY = targetY;
+        fi = i;
+        fj = j;
+        return;
+        var start = Room.Find(this);
+        var goal = (this.i, this.j);
+        var queue = new PriorityQueue<(int i, int j), float>();
+        var distMap = new Dictionary<(int i, int j), float>();
+        var comeMap = new Dictionary<(int i, int j), (int i, int j)>();
+        var visited = new bool[Room.VecWidth, Room.VecHeight];
+
+        distMap[start] = 0;
+        queue.Enqueue(start, 0);
+
+        while (queue.Count > 0)
+        {
+            var crr = queue.Dequeue();
+            if (visited[crr.i, crr.j])
+                continue;
+            visited[crr.i, crr.j] = true;
+            if (crr == goal)
+                break;
+            
+            var neighborhood = new (int i, int j)[] {
+                (crr.i + 1, crr.j), (crr.i - 1, crr.j),
+                (crr.i, crr.j - 1), (crr.i, crr.j + 1)
+            };
+            foreach (var neighbor in neighborhood)
+            {
+                if (neighbor.i < 0 || neighbor.j < 0 || neighbor.i >= Room.VecWidth || neighbor.j >= Room.VecHeight)
+                    continue;
+                if (Room.Decorations[neighbor.i, neighbor.j] is not null)
+                    continue;
+
+                if (!distMap.ContainsKey(neighbor))
+                {
+                    distMap.Add(neighbor, float.PositiveInfinity);
+                    comeMap.Add(neighbor, (-1, -1));
+                }
+                
+                var newDist = distMap[crr] + 1;
+                var oldDist = distMap[neighbor];
+                if (newDist > oldDist)
+                    continue;
+                
+                distMap[neighbor] = newDist;
+                comeMap[neighbor] = crr;
+                queue.Enqueue(neighbor, newDist);
+            }
+        }
+
+        path.Clear();
+        var it = goal;
+        while (it != start)
+        {
+            path.Add((it.i, it.j));
+            it = comeMap[it];
+        }
+        path.Reverse();
+    }
+
+    int i = 0, j = 0;
+    int fi = 0, fj = 0;
+    public void TryMove(Point mouseLocation) { }
 
     public void Spin() { }
 

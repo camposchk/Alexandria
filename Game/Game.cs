@@ -13,9 +13,6 @@ public partial class Game : Form
     private Menu menu;
     private TextBox speechTextBox;
     private Color color;
-
-    // private WallDecoration wallDecoration;
-    private FloorDecoration[] floorDecorations;    
     private Button speakButton;
 
     public Game()
@@ -98,7 +95,7 @@ public partial class Game : Form
             g.Clear(BackColor);
 
             room.Draw(g);
-            player.Move();
+            player.MovePlayer();
 
             menu.Draw(g);
 
@@ -122,20 +119,12 @@ public partial class Game : Form
             tm.Start();
 
             menu.InitializeMenu();
-
-            floorDecorations = FloorDecoration.GetFloorDecorations();
         };
 
         pb.MouseDown += (o, e) =>
         {
-            bool clicked = false;
-            bool isMoving = false;
-            
             room.Click(e.Location);
-
-            if (!clicked && !isMoving)
-                player.StartMove(room.NormalSelection);
-
+            player.ActivePlayer();
             menu.SelectItem(e.Location);
         };
 
@@ -157,9 +146,6 @@ public partial class Game : Form
                 menu.Toggle();
             if (!isMouseOverTrigger && menu.IsActive)
                 menu.Toggle();
-
-            foreach (var deco in floorDecorations)
-                deco.TryMove(e.Location);
         };
 
         Controls.Add(speechTextBox);

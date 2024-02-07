@@ -190,7 +190,7 @@ public class Menu
             g.FillRectangle(brush, rec.X + 100 * i, rec.Y - 30, 100, 30);
             g.DrawRectangle(Pens.Gray, rec.X + 100 * i, rec.Y - 30, 100, 30);
 
-            brush = GetDarkerBrush(brush);
+            brush = Colors.GetDarkerBrush(brush);
         }
     }
 
@@ -216,66 +216,54 @@ public class Menu
         int column = 0;
     }
 
-    public void OpenShop(Graphics g)
+public void OpenShop(Graphics g)
+{
+    MenuLayout(g, 4);
+
+    Rectangle inventoryRect = new Rectangle(
+        pictureBox.ClientSize.Width / 4, 
+        pictureBox.ClientSize.Height / 4, 
+        pictureBox.ClientSize.Width / 2 - 100, 
+        pictureBox.ClientSize.Height / 2 - 100
+    );
+
+    int margin = 20;
+    int spacingBetweenImages = 10;
+    int maxColumns = (inventoryRect.Width - 2 * margin) / (50 + spacingBetweenImages);
+    int imageSize = 50;
+
+    int x = inventoryRect.X + margin;
+    int y = inventoryRect.Y + margin;
+
+    int column = 0;
+
+    g.DrawString($"{player.Ruby}", new Font("Arial", 12), Brushes.DarkRed, close.X - 80, close.Y + 10);
+
+    for (int i = 0; i < shopItems.Count; i++)
     {
-        MenuLayout(g, 4);
-
-        Rectangle inventoryRect = new Rectangle(
-            pictureBox.ClientSize.Width / 4, 
-            pictureBox.ClientSize.Height / 4, 
-            pictureBox.ClientSize.Width / 2 - 100, 
-            pictureBox.ClientSize.Height / 2 - 100
-        );
-        
-        int margin = 20;
-        int spacingBetweenImages = 10;
-        int maxColumns = (inventoryRect.Width - 2 * margin) / (50 + spacingBetweenImages); 
-        int imageSize = 50; 
-
-        int x = inventoryRect.X + margin;
-        int y = inventoryRect.Y + margin;
-
-        int column = 0; 
-
-        g.DrawString($"{player.Ruby}", new Font("Arial", 12), Brushes.DarkRed, close.X - 80, close.Y + 10);
-        g.DrawImage(ruby, new Rectangle(close.X - 45, close.Y + 9, 20, 20));
-
-        foreach (var floorDecoration in FloorDecorations)
+        if (column >= maxColumns)
         {
-            foreach(var image in floorDecoration.Items)
-            {
-                if (column >= maxColumns)
-                {
-                    column = 0;
-                    x = inventoryRect.X + margin;
-                    y += imageSize + spacingBetweenImages;
-                }
-
-                float scaleWidth = (float)imageSize / image.Width;
-                float scaleHeight = (float)imageSize / image.Height;
-
-                float scale = Math.Min(scaleWidth, scaleHeight);
-
-                int newWidth = (int)(image.Width * scale);
-                int newHeight = (int)(image.Height * scale);
-
-                int centerX = x + (imageSize - newWidth) / 2;
-                int centerY = y + (imageSize - newHeight) / 2;
-
-                if (floorDecoration.Quantity > 0)
-                {
-                    g.DrawImage(image, new Rectangle(centerX, centerY, newWidth, newHeight));
-                    g.DrawString(floorDecoration.Quantity.ToString(), new Font("Arial", 12), Brushes.DarkRed, new Rectangle(centerX, centerY, newWidth, newHeight));
-                }
-
-                shopItems.Add(new RectangleF(x, y, imageSize, imageSize));
-
-                x += imageSize + spacingBetweenImages;
-
-                column++;
-            }
+            column = 0;
+            x = inventoryRect.X + margin;
+            y += imageSize + spacingBetweenImages;
         }
+
+        if (testDecoration.Quantity > 0)
+        {
+            testDecoration.Draw(g, x, y);
+            g.DrawString(testDecoration.Quantity.ToString(), new Font("Arial", 12), Brushes.DarkRed, x, y);
+        }
+
+        shopItems[i] = new RectangleF(x, y, imageSize, imageSize);
+
+        x += imageSize + spacingBetweenImages;
+        column++;
     }
+}
+
+    TestDecoration testDecoration = new TestDecoration() {
+        SizeFactor = 0.4f
+    };
 
     public void OpenCreator(Graphics g)
     {
@@ -287,18 +275,4 @@ public class Menu
         MenuLayout(g, 1);
     }
 
-    public SolidBrush GetDarkerBrush(Brush originalBrush)
-    {
-        Color originalColor = ((SolidBrush)originalBrush).Color;
-
-        float factor = 0.9f;
-
-        int red = (int)(originalColor.R * factor);
-        int green = (int)(originalColor.G * factor);
-        int blue = (int)(originalColor.B * factor);
-
-        Color darkerColor = Color.FromArgb(red, green, blue);
-
-        return new SolidBrush(darkerColor);
-    }
 }

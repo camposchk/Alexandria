@@ -15,6 +15,8 @@ public class Room
     public float RoomWidth { get; private set; } = 750;
     public float RoomHeight { get; private set; } = 750;
     public float RoomDepth { get; private set; } = 20;
+    public int VecWidth => (int)(RoomWidth / tileWidth);
+    public int VecHeight => (int)(RoomHeight / tileHeight);
     private const int tileWidth = 50;
     private const int tileHeight = 50;
     private PictureBox pictureBox;
@@ -64,6 +66,30 @@ public class Room
             for (int y = 0; y < RoomHeight / tileHeight; y++)
                 if (this.Decorations[x, y] == decoration)
                     this.Decorations[x, y] = null;
+    }
+
+    public (int i, int j) Find(IDecoration decoration)
+    {
+        for (int x = 0; x < RoomWidth / tileWidth; x++)
+            for (int y = 0; y < RoomHeight / tileHeight; y++)
+                if (this.Decorations[x, y] == decoration)
+                    return (x, y);
+        return (-1, -1);
+    }
+
+    public PointF Find(int x, int y)
+    {
+        int rows = (int)(RoomHeight / tileHeight);
+        int cols = (int)(RoomWidth / tileWidth);
+
+        var center = new PointF(
+            pictureBox.ClientSize.Width / 2,
+            pictureBox.ClientSize.Height / 2
+        ).Normal();
+
+        float rx = center.X - RoomWidth / 2 + y * tileWidth;
+        float ry = center.Y - RoomHeight / 2 + x * tileHeight;
+        return new PointF(rx, ry);
     }
 
     public void Draw(Graphics g)
@@ -169,7 +195,7 @@ public class Room
                         drawParallelepiped(g, 
                             x, y, RoomDepth + 2, 
                             tileWidth, tileHeight, 2,
-                            getDarkerColor(Color.Red)
+                            Colors.GetDarkerColor(Color.Red)
                         );
                     }
                     else
@@ -177,7 +203,7 @@ public class Room
                         drawParallelepiped(g, 
                             x, y, RoomDepth + 2, 
                             tileWidth, tileHeight, 2,
-                            getDarkerColor(tileColor)
+                            Colors.GetDarkerColor(tileColor)
                         );
                     }
 
@@ -223,33 +249,7 @@ public class Room
         foreach (var face in chao)
         {
             g.FillPolygon(brush, face);
-            brush = getDarkerBrush(brush);
+            brush = Colors.GetDarkerBrush(brush);
         }
-    }
-    
-    private Brush getDarkerBrush(Brush originalBrush)
-    {
-        Color originalColor = ((SolidBrush)originalBrush).Color;
-
-        float factor = 0.9f;
-
-        int red = (int)(originalColor.R * factor);
-        int green = (int)(originalColor.G * factor);
-        int blue = (int)(originalColor.B * factor);
-
-        Color darkerColor = Color.FromArgb(red, green, blue);
-
-        return new SolidBrush(darkerColor);
-    }
-
-    private Color getDarkerColor(Color originalColor)
-    {
-        float factor = 0.8f;
-
-        int red = (int)(originalColor.R * factor);
-        int green = (int)(originalColor.G * factor);
-        int blue = (int)(originalColor.B * factor);
-
-        return Color.FromArgb(red, green, blue);
     }
 }

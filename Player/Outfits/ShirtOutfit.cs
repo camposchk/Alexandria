@@ -19,7 +19,7 @@ public class ShirtOutfit : IPlayerOutfit
         foreach (var face in shirt)
         {
             g.FillPolygon(shirtBrush, face);
-            shirtBrush = player.GetDarkerBrush(shirtBrush); 
+            shirtBrush = Colors.GetDarkerBrush(shirtBrush); 
         }
     }
 }

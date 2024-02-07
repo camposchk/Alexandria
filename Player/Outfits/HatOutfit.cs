@@ -19,7 +19,7 @@ public class HatOutfit : IPlayerOutfit
         foreach (var face in hat)
         {
             g.FillPolygon(hatBrush, face);
-            hatBrush = player.GetDarkerBrush(hatBrush); 
+            hatBrush = Colors.GetDarkerBrush(hatBrush); 
         }
     }
 }

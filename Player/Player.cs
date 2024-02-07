@@ -39,7 +39,7 @@ public class Player
         foreach (var face in player)
         {
             g.FillPolygon(brush, face);
-            brush = GetDarkerBrush(brush);
+            brush = Colors.GetDarkerBrush(brush);
         }
 
         foreach (var outfit in outfits)
@@ -95,20 +95,5 @@ public class Player
         {
             // Não tem rubis suficientes. Lidar com isso (mensagem de erro, etc.)
         }
-    }
-
-    public Brush GetDarkerBrush(Brush originalBrush)
-    {
-        Color originalColor = ((SolidBrush)originalBrush).Color;
-
-        float factor = 0.8f;
-
-        int red = (int)(originalColor.R * factor);
-        int green = (int)(originalColor.G * factor);
-        int blue = (int)(originalColor.B * factor);
-
-        Color darkerColor = Color.FromArgb(red, green, blue);
-
-        return new SolidBrush(darkerColor);
     }
 }

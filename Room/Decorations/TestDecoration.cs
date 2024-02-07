@@ -9,6 +9,7 @@ public class TestDecoration : IDecoration
     public Vector3 Root { get; set; }
     public int X { get; set; }
     public int Y { get; set; }
+    public float SizeFactor { get; set; } = 1f;
 
     public float Cost => throw new NotImplementedException();
 
@@ -19,7 +20,7 @@ public class TestDecoration : IDecoration
     public RectangleF MenuFloorMove { get; private set; }
     public RectangleF MenuFloorSpin { get; private set; }
     public RectangleF MenuFloorStore { get; private set; }
-    public int Quantity { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public int Quantity { get; set; } = 7;
 
     SolidBrush brush = new SolidBrush(Colors.GetRandomColor());
     public TestDecoration()
@@ -66,28 +67,15 @@ public class TestDecoration : IDecoration
         foreach (var face in faces)
         {
             this.faces.Add((face, baseBrush));
-            baseBrush = getDarkerBrush(baseBrush);
+            baseBrush = Colors.GetDarkerBrush(baseBrush);
         }
-    }
-    Brush getDarkerBrush(Brush originalBrush)
-    {
-        Color originalColor = ((SolidBrush)originalBrush).Color;
-
-        float factor = 0.9f;
-
-        int red = (int)(originalColor.R * factor);
-        int green = (int)(originalColor.G * factor);
-        int blue = (int)(originalColor.B * factor);
-
-        Color darkerColor = Color.FromArgb(red, green, blue);
-
-        return new SolidBrush(darkerColor);
     }
     
     public void Draw(Graphics g, float x, float y)
     {
         var basePt = PointF.Empty.Isometric();
         g.TranslateTransform(basePt.X + x, basePt.Y + y);
+        g.ScaleTransform(SizeFactor, SizeFactor);
 
         foreach (var face in faces)
             g.FillPolygon(face.Item2, face.Item1);

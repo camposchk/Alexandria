@@ -11,7 +11,6 @@ public interface IDecoration
     void TryMove(Point mouseLocation);
     float Cost { get; }
     int Quantity { get; set; }
-    void Move(Point mouseLocation);
 
     void Spin();
 

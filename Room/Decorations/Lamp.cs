@@ -28,23 +28,23 @@ public class Lamp : IDecoration
             (0f, 0f, 15f, 50f, 50f, 5f)
             .Parallelepiped()
             .Isometric(),
-            Brushes.Gray
+            new SolidBrush(Colors.GetRandomColor())
         );
 
         add(
             (27f, 27f, -60f, 4f, 4f, 80f)
             .Parallelepiped()
             .Isometric(),
-            Brushes.Silver
+            new SolidBrush(Colors.GetRandomColor())
         );
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 10; i++)
         {
             add(
-                (10f + i, 10f + i, -57f - 3 * i, 30f - 2 * i, 30f - 2 * i, 3f)
+                (10f + i, 10f + i, -57f - 3 * i, 40f - 2 * i, 40f - 2 * i, 5f)
                 .Parallelepiped()
                 .Isometric(),
-                Brushes.LightYellow
+                Brushes.Gold
             );
         }
 
@@ -55,22 +55,8 @@ public class Lamp : IDecoration
         foreach (var face in faces)
         {
             this.faces.Add((face, baseBrush));
-            baseBrush = getDarkerBrush(baseBrush);
+            baseBrush = Colors.GetDarkerBrush(baseBrush);
         }
-    }
-    Brush getDarkerBrush(Brush originalBrush)
-    {
-        Color originalColor = ((SolidBrush)originalBrush).Color;
-
-        float factor = 0.9f;
-
-        int red = (int)(originalColor.R * factor);
-        int green = (int)(originalColor.G * factor);
-        int blue = (int)(originalColor.B * factor);
-
-        Color darkerColor = Color.FromArgb(red, green, blue);
-
-        return new SolidBrush(darkerColor);
     }
     
     public void Draw(Graphics g, float x, float y)
