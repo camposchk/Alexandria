@@ -7,8 +7,9 @@ public partial class Game : Form
 {
     private PictureBox pb;
     private Timer tm;
+    private Timer colorTimer;
     private Graphics g;
-    private TestPlayer player;
+    private Player player;
     private Room room;
     private Menu menu;
     private TextBox speechTextBox;
@@ -37,15 +38,21 @@ public partial class Game : Form
             Interval = 10
         };
 
-        player = new TestPlayer();
-        // player.AddOutfit(new HatOutfit());
-        // player.AddOutfit(new ShirtOutfit());
+        colorTimer = new Timer
+        {
+            Interval = 100
+        };
+
+        player = new Player();
+        player.AddOutfit(new HatOutfit());
+        player.AddOutfit(new ShirtOutfit());
 
         room = new Room(pb);
         room.Set(player, 3, 3);
-        room.Set(new TestDecoration(), 5, 5);
-        room.Set(new TestDecoration(), 8, 8);
+        room.Set(new Puff(), 5, 5);
+        room.Set(new Puff(), 8, 8);
         room.Set(new Lamp(), 10, 10);
+        room.Set(new Couch(), 0, 0);
                 
         menu = new Menu(pb);
 

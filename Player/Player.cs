@@ -2,58 +2,39 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 
-public class Player 
+public class Player : IDecoration
 {
-    public float X { get; set; } = 200;
-    public float Y { get; set; } = -400;
-    public float Z { get; set; } = 0;
+    private float targetX = float.NaN;
+    private float targetY = float.NaN;
+    private float ftargetX = float.NaN;
+    private float ftargetY = float.NaN;
+    public List<IDecoration> purchasedDecorations = new List<IDecoration>();
+
+    public Vector3 Root { get; set; }
+    public float X { get; set; }
+    public float Y { get; set; }
+    public float Z { get; set; }
     public float Width { get; set; } = 50;
     public float Height { get; set; } = 50;
     public float Depth { get; set; } = 100;
     public float Ruby { get; set; } = 100;
     public Color Color { get; set; } = Colors.GetRandomColor();
+    public Room Room { get; set; }
+    private List<IPlayerOutfit> outfits = new List<IPlayerOutfit>();
+
+    public float Cost => 0f;
+
+    public int Quantity { get; set; }
+
+    public List<Image> Items => throw new NotImplementedException();
 
     List<Message> Messages = new List<Message>();
 
-    private List<IPlayerOutfit> outfits = new List<IPlayerOutfit>();
-    public List<IDecoration> purchasedDecorations = new List<IDecoration>();
-
-    public void AddOutfit(IPlayerOutfit outfit)
+    public Player()
     {
-        outfits.Add(outfit);
-    }
-
-    public void Draw(Graphics g)
-    {
-        Draw(g, X, Y, Z, Width, Height, Depth, Color);
-    }
-
-    public void Draw(Graphics g, float x, float y, float z, float width, float height, float depth, Color baseColor)
-    {
-        PointF[][] player = (x, y, 20f - depth, width, height, depth)
-            .Parallelepiped()
-            .Isometric();
-
-        Brush brush = new SolidBrush(baseColor);
-        foreach (var face in player)
-        {
-            g.FillPolygon(brush, face);
-            brush = Colors.GetDarkerBrush(brush);
-        }
-
-        foreach (var outfit in outfits)
-        {
-            outfit.Draw(g, this);
-        }
-
-        Messages = Messages
-            .Where(m => m.IsActivated)
-            .ToList();
-        foreach (var message in Messages)
-        {
-            message.Draw(g);
-        }
+        Root = new Vector3(0f, 0f, 20f);
     }
 
     public void Speak(string text)
@@ -63,24 +44,70 @@ public class Player
         this.Messages.Add(message);
     }
 
-    private PointF target = new(300, 300);
-    public void StartMove(PointF destiny)
+    public void Draw(Graphics g, float x, float y)
     {
-        target = destiny;
+        var normal = new PointF(x, y).Normal();
+        if (float.IsNaN(targetX))
+        {
+            this.X = normal.X;
+            this.Y = normal.Y;
+        }
+        PointF[][] player = (this.X, this.Y, 20f - Depth, Width, Height, Depth)
+            .Parallelepiped()
+            .Isometric();
+
+        Brush brush = new SolidBrush(Color);
+        foreach (var face in player)
+        {
+            g.FillPolygon(brush, face);
+            brush = Colors.GetDarkerBrush(brush);
+        }
+
+        Messages = Messages
+            .Where(m => m.IsActivated)
+            .ToList();
+        foreach (var message in Messages)
+        {
+            message.Draw(g);
+        }
+
+        foreach (var outfit in outfits)
+        {
+            outfit.Draw(g, this);
+        }
+
+        this.i = Room.IndexSelection.X;
+        this.j = Room.IndexSelection.Y;
+        targetX = Room.NormalSelection.X;
+        targetY = Room.NormalSelection.Y;
     }
-    public void Move()
+
+    DateTime last = DateTime.Now;
+    bool activated = false;
+    public void MovePlayer()
     {
-        var dx = target.X - X;
-        var dy = target.Y - Y;
-        var mod = MathF.Sqrt(dx * dx + dy * dy);
-        if (mod < 10)
+        var now = DateTime.Now;
+        var timePassed = now - last;
+        last = now;
+        var secs = (float)timePassed.TotalSeconds;
+        if (!activated)
             return;
 
-        dx *= 10 / mod;
-        dy *= 10 / mod;
+        var dx = ftargetX - X;
+        var dy = ftargetY - Y;
+        var mod = MathF.Sqrt(dx * dx + dy * dy);
+        if (mod < 2f)
+        {
+            activated = false;
+            Room.Remove(this);
+            Room.Set(this, fi, fj);
+            return;
+        }
 
-        X += dx;
-        Y += dy;
+        var dirX = dx / mod;
+        var dirY = dy / mod;
+        X += 300 * dirX * secs;
+        Y += 300 * dirY * secs;
     }
 
     public void Buy(IDecoration deco)
@@ -96,4 +123,85 @@ public class Player
             // Não tem rubis suficientes. Lidar com isso (mensagem de erro, etc.)
         }
     }
+
+    public void AddOutfit(IPlayerOutfit outfit)
+    {
+        outfits.Add(outfit);
+    }
+
+    List<(int i, int j)> path = new List<(int i, int j)>();
+    public void ActivePlayer()
+    {
+        if (Room.Decorations[i, j] is not null)
+            return;
+        activated = true;
+        ftargetX = targetX;
+        ftargetY = targetY;
+        fi = i;
+        fj = j;
+        return;
+        var start = Room.Find(this);
+        var goal = (this.i, this.j);
+        var queue = new PriorityQueue<(int i, int j), float>();
+        var distMap = new Dictionary<(int i, int j), float>();
+        var comeMap = new Dictionary<(int i, int j), (int i, int j)>();
+        var visited = new bool[Room.VecWidth, Room.VecHeight];
+
+        distMap[start] = 0;
+        queue.Enqueue(start, 0);
+
+        while (queue.Count > 0)
+        {
+            var crr = queue.Dequeue();
+            if (visited[crr.i, crr.j])
+                continue;
+            visited[crr.i, crr.j] = true;
+            if (crr == goal)
+                break;
+
+            var neighborhood = new (int i, int j)[] {
+                (crr.i + 1, crr.j), (crr.i - 1, crr.j),
+                (crr.i, crr.j - 1), (crr.i, crr.j + 1)
+            };
+            foreach (var neighbor in neighborhood)
+            {
+                if (neighbor.i < 0 || neighbor.j < 0 || neighbor.i >= Room.VecWidth || neighbor.j >= Room.VecHeight)
+                    continue;
+                if (Room.Decorations[neighbor.i, neighbor.j] is not null)
+                    continue;
+
+                if (!distMap.ContainsKey(neighbor))
+                {
+                    distMap.Add(neighbor, float.PositiveInfinity);
+                    comeMap.Add(neighbor, (-1, -1));
+                }
+
+                var newDist = distMap[crr] + 1;
+                var oldDist = distMap[neighbor];
+                if (newDist > oldDist)
+                    continue;
+
+                distMap[neighbor] = newDist;
+                comeMap[neighbor] = crr;
+                queue.Enqueue(neighbor, newDist);
+            }
+        }
+
+        path.Clear();
+        var it = goal;
+        while (it != start)
+        {
+            path.Add((it.i, it.j));
+            it = comeMap[it];
+        }
+        path.Reverse();
+    }
+
+    int i = 0, j = 0;
+    int fi = 0, fj = 0;
+    public void TryMove(Point mouseLocation) { }
+
+    public void Spin() { }
+
+    public void Store() { }
 }

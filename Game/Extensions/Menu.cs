@@ -17,23 +17,16 @@ public class Menu
     public int Height { get; private set; }
     public int Width { get; private set; } = 200;
 
-    public Label Inventario = new();
-    public Label Shop = new();
-    public Label Creator = new();
-    public Label Oraculo = new();
-
     private Rectangle menu { get; set; }
-    private List<RectangleF> shopItems { get; set; } = new();
+    private List<(RectangleF, IDecoration)> shopItems { get; set; } = new();
     private Rectangle[] items = new Rectangle[4];
     private Rectangle rec;
     private Rectangle close;
-    private Image ruby = Image.FromFile("./Images/coin2.png");
-    private Image chest1 = Image.FromFile("./Images/vault.png");
-    private Image chest2 = Image.FromFile("./Images/chest2.png");
-    private Image shop1 = Image.FromFile("./Images/shop1.png");
-    private Image shop2 = Image.FromFile("./Images/shop2.png");
-    private Image ball1 = Image.FromFile("./Images/ball1.png");
-    private Image ball2 = Image.FromFile("./Images/ball2.png");
+
+    private SolidBrush color1 = new SolidBrush(Colors.GetRandomColor());
+    private SolidBrush color2 = new SolidBrush(Colors.GetRandomColor());
+    private SolidBrush color3 = new SolidBrush(Colors.GetRandomColor());
+    private SolidBrush color4 = new SolidBrush(Colors.GetRandomColor());
 
     Color menuColor = Colors.GetRandomColor();
 
@@ -45,25 +38,23 @@ public class Menu
     public void InitializeMenu()
     {
         IsActive = false;
-        
+
         menu = new Rectangle(pictureBox.ClientSize.Width - Width, 0, Width, pictureBox.ClientSize.Height);
-        
+
         items[0] = new(menu.Left + 50, menu.Top + 200, 100, 100);
         items[1] = new(menu.Left + 50, items[0].Bottom + 100, 100, 100);
         items[2] = new(menu.Left + 50, items[1].Bottom + 100, 100, 100);
         items[3] = new(menu.Left + 50, items[2].Bottom + 100, 100, 100);
 
-        FloorDecorations = FloorDecoration.GetFloorDecorations();
-        player = new Player();
-
         this.rec = new Rectangle(
-            pictureBox.ClientSize.Width / 4, 
-            pictureBox.ClientSize.Height / 4, 
-            pictureBox.ClientSize.Width / 2, 
+            pictureBox.ClientSize.Width / 4,
+            pictureBox.ClientSize.Height / 4,
+            pictureBox.ClientSize.Width / 2,
             pictureBox.ClientSize.Height / 2
         );
 
         this.close = new Rectangle(rec.Right - 30, rec.Y - 30, 30, 30);
+        player = new Player();
     }
 
     public void Toggle()
@@ -75,7 +66,7 @@ public class Menu
     {
         if (IsActive)
         {
-            int opacity = 200;  
+            int opacity = 200;
             Color color = Color.FromArgb(opacity, menuColor);
 
             // Logo = new Bitmap(Logo, new Size(100, 100));
@@ -86,34 +77,19 @@ public class Menu
             g.DrawRectangle(Pens.Gray, menu);
 
             g.DrawString($"{player.Ruby}", new Font("Arial", 12), Brushes.DarkRed, menu.X + 20, menu.Y + 10);
-            g.DrawImage(ruby, new Rectangle(menu.X + 55, menu.Y + 9, 20, 20));
-            
-            // if (!IsInventoryOpen)
-            //     g.DrawImage(chest1, items[0]);
-            // else 
-            //     g.DrawImage(chest2, items[0]);
+            g.FillEllipse(new SolidBrush(Colors.GetRandomColor()), new Rectangle(menu.X + 55, menu.Y + 9, 20, 20));
 
-            // if (!IsShopOpen)
-            //     g.DrawImage(shop1, items[1]);
-            // else
-            //     g.DrawImage(shop2, items[1]);
+            g.FillEllipse(IsInventoryOpen ? new SolidBrush(Colors.GetRandomColor()) : color1, items[0]);
+            g.DrawEllipse(Pens.White, items[0]);
 
-            g.FillEllipse(new SolidBrush(Colors.GetRandomColor()), items[0]);
-            g.DrawEllipse(new Pen(Colors.GetRandomColor()), items[0]);
-            
-            g.FillEllipse(new SolidBrush(Colors.GetRandomColor()), items[1]);
-            g.DrawEllipse(new Pen(Colors.GetRandomColor()), items[1]);
+            g.FillEllipse(IsShopOpen ? new SolidBrush(Colors.GetRandomColor()) : color2, items[1]);
+            g.DrawEllipse(Pens.White, items[1]);
 
-            g.FillEllipse(new SolidBrush(Colors.GetRandomColor()), items[2]);
-            g.DrawEllipse(new Pen(Colors.GetRandomColor()), items[2]);
+            g.FillEllipse(IsCreatorOpen ? new SolidBrush(Colors.GetRandomColor()) : color3, items[2]);
+            g.DrawEllipse(Pens.White, items[2]);
 
-            g.FillEllipse(new SolidBrush(Colors.GetRandomColor()), items[3]);
-            g.DrawEllipse(new Pen(Colors.GetRandomColor()), items[3]);
-
-            // if(!IsOracleOpen)
-            //     g.DrawImage(ball1, items[3]);
-            // else
-            //     g.DrawImage(ball2, items[3]);
+            g.FillEllipse(IsOracleOpen ? new SolidBrush(Colors.GetRandomColor()) : color4, items[3]);
+            g.DrawEllipse(Pens.White, items[3]);
         }
     }
 
@@ -137,9 +113,9 @@ public class Menu
 
         for (int i = 0; i < shopItems.Count; i++)
         {
-            if (shopItems[i].Contains(mouseLocation))
+            if (shopItems[i].Item1.Contains(mouseLocation))
             {
-                player.Buy(FloorDecorations[i]);
+                player.Buy(shopItems[i].Item2);
                 break;
             }
         }
@@ -176,16 +152,16 @@ public class Menu
 
     public void MenuLayout(Graphics g, int n)
     {
-        Color color = Color.FromArgb(200, menuColor.R, menuColor.G, menuColor.B);;
+        Color color = Color.FromArgb(200, menuColor.R, menuColor.G, menuColor.B); ;
         SolidBrush brush = new SolidBrush(color);
 
         g.FillRectangle(brush, rec);
         g.DrawRectangle(Pens.Gray, rec);
-        
+
         g.FillRectangle(new SolidBrush(Color.FromArgb(200, Color.DarkRed)), close);
         g.DrawRectangle(Pens.Gray, close);
-            
-        for(int i = 0; i < n; i++)
+
+        for (int i = 0; i < n; i++)
         {
             g.FillRectangle(brush, rec.X + 100 * i, rec.Y - 30, 100, 30);
             g.DrawRectangle(Pens.Gray, rec.X + 100 * i, rec.Y - 30, 100, 30);
@@ -199,21 +175,33 @@ public class Menu
         MenuLayout(g, 4);
 
         Rectangle inventoryRect = new Rectangle(
-            pictureBox.ClientSize.Width / 4, 
-            pictureBox.ClientSize.Height / 4, 
-            pictureBox.ClientSize.Width / 2 - 100, 
+            pictureBox.ClientSize.Width / 4,
+            pictureBox.ClientSize.Height / 4,
+            pictureBox.ClientSize.Width / 2 - 100,
             pictureBox.ClientSize.Height / 2 - 100
         );
-        
+
         int margin = 20;
         int spacingBetweenImages = 10;
-        int maxColumns = (inventoryRect.Width - 2 * margin) / (50 + spacingBetweenImages); 
-        int imageSize = 50; 
+        int itemWidth = 50;
+        int itemHeight = 50;
 
+        int itemsPerRow = (inventoryRect.Width - margin * 2 + spacingBetweenImages) / (itemWidth + spacingBetweenImages);
+
+        List<dynamic> items = new List<dynamic> { puff, lamp, couch };
         int x = inventoryRect.X + margin;
         int y = inventoryRect.Y + margin;
 
-        int column = 0;
+        for (int i = 0; i < player.purchasedDecorations.Count; i++)
+        {
+
+            int row = i / itemsPerRow;
+            int col = i % itemsPerRow;
+            int itemX = x + (col * (itemWidth + spacingBetweenImages)) + 20;
+            int itemY = y + (row * (itemHeight + spacingBetweenImages)) + 40;
+
+            player.purchasedDecorations[i].Draw(g, itemX, itemY);
+        }
     }
 
     public void OpenShop(Graphics g)
@@ -221,26 +209,54 @@ public class Menu
         MenuLayout(g, 4);
 
         Rectangle inventoryRect = new Rectangle(
-            pictureBox.ClientSize.Width / 4, 
-            pictureBox.ClientSize.Height / 4, 
-            pictureBox.ClientSize.Width / 2 - 100, 
+            pictureBox.ClientSize.Width / 4,
+            pictureBox.ClientSize.Height / 4,
+            pictureBox.ClientSize.Width / 2 - 100,
             pictureBox.ClientSize.Height / 2 - 100
         );
-        
+
         int margin = 20;
         int spacingBetweenImages = 10;
+        int itemWidth = 50;
+        int itemHeight = 50;
 
+        int itemsPerRow = (inventoryRect.Width - margin * 2 + spacingBetweenImages) / (itemWidth + spacingBetweenImages);
+
+        List<dynamic> items = new List<dynamic> { puff, lamp, couch };
         int x = inventoryRect.X + margin;
         int y = inventoryRect.Y + margin;
 
-        g.DrawString($"{player.Ruby}", new Font("Arial", 12), Brushes.DarkRed, close.X - 80, close.Y + 10);
-        g.DrawImage(ruby, new Rectangle(close.X - 45, close.Y + 9, 20, 20));
+        for (int i = 0; i < items.Count; i++)
+        {
 
+            int row = i / itemsPerRow;
+            int col = i % itemsPerRow;
+            int itemX = x + (col * (itemWidth + spacingBetweenImages)) + 20;
+            int itemY = y + (row * (itemHeight + spacingBetweenImages)) + 40;
 
-        testDecoration.Draw(g, x + margin, y + margin * 2);
+            shopItems.Add((new RectangleF(itemX, itemY, 100, 100), items[i]));
+            items[i].Draw(g, itemX, itemY);
+
+            g.DrawRectangle(Pens.Black, new Rectangle(itemX, itemY, 30, 30));
+
+        }
+        g.DrawString($"{player.Ruby}", new Font("Arial", 12), Brushes.Black, close.X - 80, close.Y + 10);
+        g.FillEllipse(new SolidBrush(Colors.GetRandomColor()), new Rectangle(close.X - 45, close.Y + 9, 20, 20));
     }
-    TestDecoration testDecoration = new TestDecoration() {
+
+    Puff puff = new Puff()
+    {
         SizeFactor = 0.6f
+    };
+
+    Lamp lamp = new Lamp()
+    {
+        SizeFactor = 0.5f
+    };
+
+    Couch couch = new Couch()
+    {
+        SizeFactor = 0.4f
     };
 
     public void OpenCreator(Graphics g)

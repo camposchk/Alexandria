@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Numerics;
 using System.Collections.Generic;
-public class TestDecoration : IDecoration
+public class Puff : IDecoration
 {
     public Room Room { get; set; }
     private bool moving = false;
@@ -11,7 +11,7 @@ public class TestDecoration : IDecoration
     public int Y { get; set; }
     public float SizeFactor { get; set; } = 1f;
 
-    public float Cost => throw new NotImplementedException();
+    public float Cost => 40;
 
     public List<Image> Items => throw new NotImplementedException();
 
@@ -23,7 +23,7 @@ public class TestDecoration : IDecoration
     public int Quantity { get; set; } = 7;
 
     SolidBrush brush = new SolidBrush(Colors.GetRandomColor());
-    public TestDecoration()
+    public Puff()
     {
         Root = new Vector3(0f, 0f, 20f);
         add(

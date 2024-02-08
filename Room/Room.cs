@@ -10,9 +10,7 @@ public class Room
     public Point IndexSelection { get; private set; }
     public PointF NormalSelection { get; private set; }
     public IDecoration[,] Decorations { get; private set; }
-
-    // public TestPlayer[,] Player { get; private set; }
-    public float RoomWidth { get; private set; } = 750;
+    public float RoomWidth { get; private set; } = 750 ;
     public float RoomHeight { get; private set; } = 750;
     public float RoomDepth { get; private set; } = 20;
     public int VecWidth => (int)(RoomWidth / tileWidth);
@@ -20,7 +18,6 @@ public class Room
     private const int tileWidth = 50;
     private const int tileHeight = 50;
     private PictureBox pictureBox;
-    private FloorTexture[] textures = FloorTexture.GetFloorTextures();
     bool IsTaken = false;
     private PointF cursor = PointF.Empty;
     Color wallColor = Colors.GetRandomColor();
@@ -97,7 +94,6 @@ public class Room
         drawWalls(g);
         drawFloor(g);
         drawItems(g);
-        // drawPlayer(g);
     }
 
     private void InitializeRoom()
@@ -106,7 +102,6 @@ public class Room
         int rows = (int)(RoomHeight / tileHeight);
         int cols = (int)(RoomWidth / tileWidth);
         Decorations = new IDecoration[rows, cols];
-        // Player = new TestPlayer[rows, cols];
     }
     
     private void drawItems(Graphics g)
@@ -134,33 +129,7 @@ public class Room
             }
         }
     }
-
-    // private void drawPlayer(Graphics g)
-    // {
-    //     int rows = (int)(RoomHeight / tileHeight);
-    //     int cols = (int)(RoomWidth / tileWidth);
-
-    //     var center = new PointF(
-    //         pictureBox.ClientSize.Width / 2,
-    //         pictureBox.ClientSize.Height / 2
-    //     ).Normal();
-
-    //     for (int i = rows - 1; i >= 0; i--)
-    //     {
-    //         for (int j = cols - 1; j >= 0; j--)
-    //         {
-    //             // TestPlayer player = Player[i, j];
-    //             if (player is null)
-    //                 continue;
-                
-    //             float x = center.X - RoomWidth / 2 + j * tileWidth;
-    //             float y = center.Y - RoomHeight / 2 + i * tileHeight;
-    //             var screenPoint = new PointF(x, y).Isometric(); 
-    //             player.Draw(g, screenPoint.X, screenPoint.Y);
-    //         }
-    //     }
-    // }
-
+    
     private void drawFloor(Graphics g)
     {        
         var center = new PointF(

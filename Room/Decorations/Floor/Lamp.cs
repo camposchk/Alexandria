@@ -10,7 +10,7 @@ public class Lamp : IDecoration
     public int X { get; set; }
     public int Y { get; set; }
 
-    public float Cost => throw new NotImplementedException();
+    public float Cost => 10;
 
     public List<Image> Items => throw new NotImplementedException();
 
@@ -19,7 +19,8 @@ public class Lamp : IDecoration
     public RectangleF MenuFloorMove { get; private set; }
     public RectangleF MenuFloorSpin { get; private set; }
     public RectangleF MenuFloorStore { get; private set; }
-    public int Quantity { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public int Quantity { get; set; } = 3;
+    public float SizeFactor { get; set; } = 1f;
 
     public Lamp()
     {
@@ -64,6 +65,7 @@ public class Lamp : IDecoration
     {
         var basePt = PointF.Empty.Isometric();
         g.TranslateTransform(basePt.X + x, basePt.Y + y);
+        g.ScaleTransform(SizeFactor, SizeFactor);
 
         foreach (var face in faces)
             g.FillPolygon(face.Item2, face.Item1);
