@@ -30,6 +30,8 @@ public class Player : IDecoration
 
     public List<Image> Items => throw new NotImplementedException();
 
+    int i = 0, j = 0;
+    int fi = 0, fj = 0;
     List<Message> Messages = new List<Message>();
 
     public Player()
@@ -129,7 +131,6 @@ public class Player : IDecoration
         outfits.Add(outfit);
     }
 
-    List<(int i, int j)> path = new List<(int i, int j)>();
     public void ActivePlayer()
     {
         if (Room.Decorations[i, j] is not null)
@@ -140,65 +141,8 @@ public class Player : IDecoration
         fi = i;
         fj = j;
         return;
-        var start = Room.Find(this);
-        var goal = (this.i, this.j);
-        var queue = new PriorityQueue<(int i, int j), float>();
-        var distMap = new Dictionary<(int i, int j), float>();
-        var comeMap = new Dictionary<(int i, int j), (int i, int j)>();
-        var visited = new bool[Room.VecWidth, Room.VecHeight];
-
-        distMap[start] = 0;
-        queue.Enqueue(start, 0);
-
-        while (queue.Count > 0)
-        {
-            var crr = queue.Dequeue();
-            if (visited[crr.i, crr.j])
-                continue;
-            visited[crr.i, crr.j] = true;
-            if (crr == goal)
-                break;
-
-            var neighborhood = new (int i, int j)[] {
-                (crr.i + 1, crr.j), (crr.i - 1, crr.j),
-                (crr.i, crr.j - 1), (crr.i, crr.j + 1)
-            };
-            foreach (var neighbor in neighborhood)
-            {
-                if (neighbor.i < 0 || neighbor.j < 0 || neighbor.i >= Room.VecWidth || neighbor.j >= Room.VecHeight)
-                    continue;
-                if (Room.Decorations[neighbor.i, neighbor.j] is not null)
-                    continue;
-
-                if (!distMap.ContainsKey(neighbor))
-                {
-                    distMap.Add(neighbor, float.PositiveInfinity);
-                    comeMap.Add(neighbor, (-1, -1));
-                }
-
-                var newDist = distMap[crr] + 1;
-                var oldDist = distMap[neighbor];
-                if (newDist > oldDist)
-                    continue;
-
-                distMap[neighbor] = newDist;
-                comeMap[neighbor] = crr;
-                queue.Enqueue(neighbor, newDist);
-            }
-        }
-
-        path.Clear();
-        var it = goal;
-        while (it != start)
-        {
-            path.Add((it.i, it.j));
-            it = comeMap[it];
-        }
-        path.Reverse();
     }
 
-    int i = 0, j = 0;
-    int fi = 0, fj = 0;
     public void TryMove(Point mouseLocation) { }
 
     public void Spin() { }

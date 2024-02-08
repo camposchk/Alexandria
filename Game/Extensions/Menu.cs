@@ -6,7 +6,6 @@ using System.Windows.Forms;
 public class Menu
 {
     private PictureBox pictureBox;
-    public FloorDecoration[] FloorDecorations { get; set; }
     public Player player { get; set; }
     public bool IsInventoryOpen { get; private set; } = false;
     public bool IsShopOpen { get; private set; } = false;
@@ -234,10 +233,12 @@ public class Menu
             int itemX = x + (col * (itemWidth + spacingBetweenImages)) + 20;
             int itemY = y + (row * (itemHeight + spacingBetweenImages)) + 40;
 
-            shopItems.Add((new RectangleF(itemX, itemY, 100, 100), items[i]));
-            items[i].Draw(g, itemX, itemY);
+            if (items[i].Quantity > 0)
+            {
+                shopItems.Add((new RectangleF(itemX - 15, itemY - 30, 100, 100), items[i]));
+                items[i].Draw(g, itemX, itemY);
+            }
 
-            g.DrawRectangle(Pens.Black, new Rectangle(itemX, itemY, 30, 30));
 
         }
         g.DrawString($"{player.Ruby}", new Font("Arial", 12), Brushes.Black, close.X - 80, close.Y + 10);

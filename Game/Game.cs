@@ -7,13 +7,11 @@ public partial class Game : Form
 {
     private PictureBox pb;
     private Timer tm;
-    private Timer colorTimer;
     private Graphics g;
     private Player player;
     private Room room;
     private Menu menu;
     private TextBox speechTextBox;
-    private Color color;
     private Button speakButton;
 
     public Game()
@@ -26,7 +24,6 @@ public partial class Game : Form
 
         WindowState = FormWindowState.Maximized;
         BackColor = Colors.GetRandomColor();
-        color = Colors.GetRandomColor();
         
         pb = new PictureBox
         {
@@ -38,21 +35,16 @@ public partial class Game : Form
             Interval = 10
         };
 
-        colorTimer = new Timer
-        {
-            Interval = 100
-        };
-
         player = new Player();
         player.AddOutfit(new HatOutfit());
         player.AddOutfit(new ShirtOutfit());
 
         room = new Room(pb);
         room.Set(player, 3, 3);
-        room.Set(new Puff(), 5, 5);
-        room.Set(new Puff(), 8, 8);
-        room.Set(new Lamp(), 10, 10);
-        room.Set(new Couch(), 0, 0);
+        room.Set(new Puff(), 9, 5);
+        room.Set(new Puff(), 9, 3);
+        room.Set(new Lamp(), 12, 6);
+        room.Set(new Couch(), 12, 3);
                 
         menu = new Menu(pb);
 

@@ -15,10 +15,6 @@ public class Lamp : IDecoration
     public List<Image> Items => throw new NotImplementedException();
 
     List<(PointF[], Brush)> faces = new();
-    public bool OpenFloorMenu = false;
-    public RectangleF MenuFloorMove { get; private set; }
-    public RectangleF MenuFloorSpin { get; private set; }
-    public RectangleF MenuFloorStore { get; private set; }
     public int Quantity { get; set; } = 3;
     public float SizeFactor { get; set; } = 1f;
 
@@ -72,32 +68,12 @@ public class Lamp : IDecoration
 
         g.ResetTransform();
 
-        if(OpenFloorMenu)
-        {
-            MenuFloorMove = new RectangleF(x, y - 40, 400, 30);
-            MenuFloorSpin = new RectangleF(x, MenuFloorMove.Y - 35, 400, 30);
-            MenuFloorStore = new RectangleF(x, MenuFloorSpin.Y - 35, 400, 30);
-
-            g.DrawRectangle(Pens.Red, MenuFloorMove);
-            g.DrawRectangle(Pens.Blue, MenuFloorSpin);
-            g.DrawRectangle(Pens.Yellow, MenuFloorStore);
-        }
     }
 
     public void Click(PointF cursor)
     {
-        if (OpenFloorMenu)
-        {
-            moving = !moving && MenuFloorMove.Contains(cursor);
-
-            OpenFloorMenu = 
-                MenuFloorMove.Contains(cursor) ||
-                MenuFloorSpin.Contains(cursor) ||
-                MenuFloorStore.Contains(cursor);
-        }
-
         if (Room.Decorations[Room.IndexSelection.X, Room.IndexSelection.Y] == this)
-            OpenFloorMenu = true;
+            moving = !moving;
     }
 
     public void TryMove(Point mouseLocation)
