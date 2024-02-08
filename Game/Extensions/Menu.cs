@@ -68,8 +68,6 @@ public class Menu
             int opacity = 200;
             Color color = Color.FromArgb(opacity, menuColor);
 
-            // Logo = new Bitmap(Logo, new Size(100, 100));
-
             using (SolidBrush brush = new(color))
                 g.FillRectangle(brush, menu);
 

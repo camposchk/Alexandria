@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -24,7 +22,7 @@ public partial class Game : Form
 
         WindowState = FormWindowState.Maximized;
         BackColor = Colors.GetRandomColor();
-        
+
         pb = new PictureBox
         {
             Dock = DockStyle.Fill,
@@ -45,14 +43,14 @@ public partial class Game : Form
         room.Set(new Puff(), 9, 3);
         room.Set(new Lamp(), 12, 6);
         room.Set(new Couch(), 12, 3);
-                
+
         menu = new Menu(pb);
 
         speechTextBox = new TextBox
         {
-            Width = 600, 
-            Height = 20, 
-            Location = new Point(this.ClientSize.Width / 2 - 300, this.ClientSize.Height - 100), 
+            Width = 600,
+            Height = 20,
+            Location = new Point(this.ClientSize.Width / 2 - 300, this.ClientSize.Height - 100),
             Anchor = AnchorStyles.Bottom,
             MaxLength = 21
         };
@@ -72,15 +70,15 @@ public partial class Game : Form
         speakButton = new Button
         {
             Text = "Falar",
-            Width = 50, 
-            Height = 25, 
-            BackColor = Color.FromArgb(200, 0, 0, 0),
+            Width = 50,
+            Height = 25,
+            BackColor = Colors.GetRandomColor(),
             ForeColor = Color.White,
             Location = new Point(speechTextBox.Right + 10, this.ClientSize.Height - 101),
             Anchor = AnchorStyles.Bottom
         };
 
-        speakButton.Click += (o, e) => 
+        speakButton.Click += (o, e) =>
         {
             if (string.IsNullOrEmpty(speechTextBox.Text))
                 return;
@@ -128,9 +126,9 @@ public partial class Game : Form
         };
 
         pb.MouseMove += (o, e) =>
-        {               
+        {
             room.Move(e.Location);
-            
+
             Rectangle screenBounds = Screen.FromControl(pb).Bounds;
             Rectangle triggerBounds;
 

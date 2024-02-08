@@ -43,8 +43,8 @@ public partial class LoginForm : Form
 
         pictureBox = new PictureBox
         {
-            Location = new Point((Width - ClientSize.Width) / 2, 80),
-            Image = Image.FromFile("./Images/alexandriaBlack.png"),
+            Location = new Point((Width - ClientSize.Width) / 2 + 550, 80),
+            Image = Image.FromFile("./Images/Logo/alexandriaBlack.png"),
             SizeMode = PictureBoxSizeMode.AutoSize
         };
         
@@ -65,14 +65,14 @@ public partial class LoginForm : Form
 
         loginButton = new Button
         {
-            Location = new Point((Width - ClientSize.Width) / 2, passwordTextBox.Bottom + 20),
-            Size = new Size(200, 30),
-            Text = "Login",
-            BackColor = Color.White,
+            Location = new Point((Width - ClientSize.Width) / 2 + 850, passwordTextBox.Bottom + 20),
+            Size = new Size(200, 80),
+            Text = "Entrar",
+            BackColor = Colors.GetRandomColor(),
         };
 
-        Controls.Add(usernameTextBox);
-        Controls.Add(passwordTextBox);
+        // Controls.Add(usernameTextBox);
+        // Controls.Add(passwordTextBox);
         Controls.Add(loginButton);
         Controls.Add(pictureBox);
 

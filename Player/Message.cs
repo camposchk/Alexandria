@@ -25,7 +25,7 @@ public class Message
         var size = (int)g.MeasureString(message, font).Width + 40;
         Rectangle rect = new Rectangle((int)position.X - size / 2, (int)position.Y - (depth + 40), size, 20);
 
-        float a = 
+        float a =
             time < start ? 1f :
             time > limit ? 0f :
             1f - (time - start) / (float)(limit - start);
